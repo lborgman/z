@@ -1,0 +1,257 @@
+/* Fix things I do not like in Skeleton
+   ==================================== */
+i {
+    font-style: italic;
+}
+
+/* Breaks googles layout!
+ * { box-sizing: border-box !important; }
+ */
+
+#logo-etc-div {
+    float:right;
+    text-align: right;
+    width:200px;
+    margin-top: 0;
+    margin-left: 10px;
+}
+.top-btn-div {
+    float: right;
+}
+.top-btn {
+    text-decoration: none;
+    display: inline-block;
+    color: #33c;
+    background: #e9eeff;
+    padding: 6px;
+    margin-left: 2px;
+    margin-bottom: 8px;
+}
+.top-btn:hover {
+    text-decoration: underline;
+    color: green;
+}
+.top-btn:hover  {
+    background: #ee0;
+}
+.top-btn:focus, a:focus, .gsc-cursor-page:focus  {
+    background: #ee0 !important;
+}
+.less-important {
+    color:#999;
+    padding-left: 4em;
+}
+a.no-underline {
+    text-decoration: none;
+    color: green;
+}
+a.no-underline:hover {
+    text-decoration: underline;
+}
+
+
+#main-outer-div {
+    xborder: thick black solid;
+}
+#main-div {
+    xfloat: left;
+    xmin-width: 400px;
+    max-width: 900px;
+    margin: 0 auto;
+    xborder: thick read solid;
+    xtext-align: center;
+}
+
+.left-margin {
+    float:left;
+    width: 120px;
+    height: 1px;
+}
+#header-div {
+    margin-top: 30px;
+}
+#header-inner-div {
+    overflow: auto;
+    xborder: thin black solid;
+}
+
+#main-main-div {
+    clear: both;
+    xborder: 1px green solid;
+}
+#main-inner-div {
+}
+#dimmer {
+    z-index:1;
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    display:none;
+    opacity: 0.5;
+    background-color:black;
+}
+#about {
+    display:none;
+    z-index:2;
+    position:absolute;
+    left:4em;
+    top:4em;
+    background-color:#feffff;
+    border:thin solid #fc0;
+    padding:2em;
+    max-width:40em;
+}
+#about dd {
+    margin: 0;
+}
+#about li {
+    margin: 0;
+    padding: 0;
+}
+#closeabout {
+    position:absolute;
+    right:2em;
+    top: 1em;
+    cursor:pointer;
+}
+#hr-tech {
+    margin-top:4em;
+}
+#technical {
+    display:none;
+}
+.about-detail {
+    margin-left: 2em;
+}
+#site-setup-box {
+    margin-right:0em;
+    float:left;
+    border:#ddd solid 1px;
+    padding: 1em;
+    width:auto;
+}
+#liblist {
+    margin-top: 15px;
+}
+#liblist li {
+    margin-bottom: 0;
+}
+h1 { font-size: 35px; line-height: 40px; margin-bottom: 10px; }
+h1 { xmargin-bottom: 4px; }
+a:focus {
+    outline: 1px #ee0 solid !important;
+}
+
+/* Columns
+   ============================================== */
+.newspaper-cols {
+    column-width: 400px;
+    -webkit-column-width: 400px;
+    -moz-column-width: 4   column-rule: 2px solid #ccc;
+
+    column-rule: 1px solid #ddd;
+    -webkit-column-rule: 1px solid #ddd;
+    -moz-column-rule: 1px solid #ddd;
+
+    column-gap: 40px;
+    -webkit-column-gap: 40px;
+    -moz-column-gap: 40px;
+}00px;
+}
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+    .newspaper-cols {
+        column-width: 300px;
+        -webkit-column-width: 300px;
+        -moz-column-width: 300px;
+    }
+}
+@media only screen and (max-width: 767px) {
+    .newspaper-cols {
+        column-width: 300px;
+        -webkit-column-width: 300px;
+        -moz-column-width: 300px;
+    }
+}
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+    .newspaper-cols {
+        column-width: 300px;
+        -webkit-column-width: 300px;
+        -moz-column-width: 300px;
+    }
+}
+
+/* =================================
+   Latest additions */
+
+.myNew-link {
+    font-size: 16px;
+    color: #00c;
+}
+.myNew-link:visited {
+    color: #60c;
+}
+.myNew-abs-div {
+    font-size: 13px;
+    color: #963;
+}
+.myNew-url-div {
+    font-size: 13px;
+    color: #060;
+}
+.myNew-date {
+    font-size: 13px;
+    color: #cc2900;
+}
+.myNew-div {
+    margin-bottom: 20px;
+}
+
+#zlatest span.zreader-toggle-fetch {
+    cursor: pointer;
+}
+#zlatest span.zreader-toggle-fetch:hover {
+    color: green;
+}
+.zReaderRequest-info {
+    font-style: italic;
+}
+.zReaderRequest-error {
+    font-style: italic;
+    color: red;
+}
+
+/* #zlatest div.zreader-toggle-fetch-output { */
+#zlatest {
+    background: orange;
+    padding: 13px;
+    border: 1px solid #FFEECF;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+#zlatest div.zreader-toggle-fetch-inner {
+    background: white;
+    padding: 8px;
+    overflow: hidden;
+}
+#zlatest .zreader-toggle-fetch-output,    #zlatest .zreader-toggle-fetch-inner {
+    -webkit-transition: all 3s ease-in-out;
+    -moz-transition: all 3s ease-in-out;
+    -o-transition: all 3s ease-in-out;
+    transition: all 3s ease-in-out;
+}
+.zReader-requested {
+    max-height: 50px;
+}
+.zreader-received {
+    max-height: 2000px;
+}
+
+/* External links
+   ============================================== */
+a[target]::after {
+    margin-left: 10px;
+    content: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtODI2LjQyOSAtNjk4Ljc5MSkiPjxyZWN0IHdpZHRoPSI1Ljk4MiIgaGVpZ2h0PSI1Ljk4MiIgeD0iODI2LjkyOSIgeT0iNzAyLjMwOSIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjMDZjIi8+PGc+PHBhdGggZD0iTTgzMS4xOTQgNjk4Ljc5MWg1LjIzNHY1LjM5MWwtMS41NzEgMS41NDUtMS4zMS0xLjMxLTIuNzI1IDIuNzI1LTIuNjg5LTIuNjg5IDIuODA4LTIuODA4LTEuMzExLTEuMzExeiIgZmlsbD0iIzA2ZiIvPjxwYXRoIGQ9Ik04MzUuNDI0IDY5OS43OTVsLjAyMiA0Ljg4NS0xLjgxNy0xLjgxNy0yLjg4MSAyLjg4MS0xLjIyOC0xLjIyOCAyLjg4MS0yLjg4MS0xLjg1MS0xLjg1MXoiIGZpbGw9IiNmZmYiLz48L2c+PC9nPjwvc3ZnPg==);
+}
+
