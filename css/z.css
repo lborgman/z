@@ -21,18 +21,16 @@ i {
 .top-btn {
     text-decoration: none;
     display: inline-block;
-    color: #33c;
-    background: #e9eeff;
+    color: #7CD3FF;
+    background: #005E8E;
     padding: 6px;
     margin-left: 2px;
     margin-bottom: 8px;
+    font-size: 14px;
+    border-radius: 8px;
 }
 .top-btn:hover {
-    text-decoration: underline;
-    color: green;
-}
-.top-btn:hover  {
-    background: #ee0;
+    background-color: black;
 }
 .top-btn:focus, a:focus, .gsc-cursor-page:focus  {
     background: #ee0 !important;
@@ -43,7 +41,7 @@ i {
 }
 a.no-underline {
     text-decoration: none;
-    color: green;
+    color: #005E8E;
 }
 a.no-underline:hover {
     text-decoration: underline;
@@ -68,7 +66,7 @@ a.no-underline:hover {
     height: 1px;
 }
 #header-div {
-    margin-top: 30px;
+    margin-top: 10px;
 }
 #header-inner-div {
     overflow: auto;
@@ -138,11 +136,12 @@ a.no-underline:hover {
 #liblist li {
     margin-bottom: 0;
 }
-h1 { font-size: 35px; line-height: 40px; margin-bottom: 10px; }
-h1 { xmargin-bottom: 4px; }
+h1 { font-size: 25px; line-height: 30px; margin-bottom: 0px; }
 a:focus {
     outline: 1px #ee0 solid !important;
 }
+#desc { font-size: 14px; }
+#desc p { margin-top: 6px; }
 
 /* Columns
    ============================================== */
@@ -199,6 +198,8 @@ a:focus {
 .myNew-url-div {
     font-size: 13px;
     color: #060;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 .myNew-date {
     font-size: 13px;
@@ -212,7 +213,8 @@ a:focus {
     cursor: pointer;
 }
 #zlatest span.zreader-toggle-fetch:hover {
-    color: green;
+    xcolor: white;
+    background-color: black;
 }
 .zReaderRequest-info {
     font-style: italic;
@@ -224,11 +226,14 @@ a:focus {
 
 /* #zlatest div.zreader-toggle-fetch-output { */
 #zlatest {
-    background: orange;
+    xbackground: orange;
+    background: #005E8E;
+    color: #7CD3FF;
     padding: 13px;
     border: 1px solid #FFEECF;
     padding-top: 2px;
     padding-bottom: 2px;
+    display: inline-block;
 }
 #zlatest div.zreader-toggle-fetch-inner {
     background: white;
@@ -255,3 +260,31 @@ a[target]::after {
     content: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtODI2LjQyOSAtNjk4Ljc5MSkiPjxyZWN0IHdpZHRoPSI1Ljk4MiIgaGVpZ2h0PSI1Ljk4MiIgeD0iODI2LjkyOSIgeT0iNzAyLjMwOSIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjMDZjIi8+PGc+PHBhdGggZD0iTTgzMS4xOTQgNjk4Ljc5MWg1LjIzNHY1LjM5MWwtMS41NzEgMS41NDUtMS4zMS0xLjMxLTIuNzI1IDIuNzI1LTIuNjg5LTIuNjg5IDIuODA4LTIuODA4LTEuMzExLTEuMzExeiIgZmlsbD0iIzA2ZiIvPjxwYXRoIGQ9Ik04MzUuNDI0IDY5OS43OTVsLjAyMiA0Ljg4NS0xLjgxNy0xLjgxNy0yLjg4MSAyLjg4MS0xLjIyOC0xLjIyOCAyLjg4MS0yLjg4MS0xLjg1MS0xLjg1MXoiIGZpbGw9IiNmZmYiLz48L2c+PC9nPjwvc3ZnPg==);
 }
 
+/* Menu
+   ============================= */
+#menu-div ul {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    list-style-position: outside;
+    list-style-type: none;
+    list-style-image: none;
+}
+
+#menu-div ul li {
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 13px;
+    height: 30px;
+    line-height: 30px;
+}
+#menu-div ul li:hover {
+    cursor: pointer;
+    border-bottom: 3px solid #7CD3FF;
+}
+
+.menu-selected {
+    cursor: default !important;
+    border-bottom: 3px solid #005e8e !important;
+    color: #005e8e !important;
+}

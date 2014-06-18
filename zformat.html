@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+
+    <!-- Basic Page Needs
+         ================================================== -->
+    <meta charset="utf-8" />
+    <!-- <notitle>Zotero Item Formatter</notitle> -->
+
+    <!-- Mobile Specific Metas
+         ================================================== -->
+    <meta name="viewport" content="initial-scale=1" />
+
+    <!-- CSS
+         ================================================== -->
+    <!-- <link rel="stylesheet" href="dhg-Skeleton-7ab6820/stylesheets/base.css" /> -->
+    <!-- <link rel="stylesheet" href="dhg-Skeleton-7ab6820/stylesheets/skeleton.css" /> -->
+
+    <!-- Favicons
+         ================================================== -->
+    <link rel="shortcut icon" href="http://zotero.org/favicon.ico" />
+
+    <link rel="stylesheet" href="css/zformat.css" />
+    <script type="text/javascript" src="js/zreader.js"></script>
+    <script type="text/javascript" src="js/zformat.js"></script>
+
+    <!-- Twitter cards
+         ================================================== -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="MY tytle" />
+    <meta name="twitter:description" content="my long desc" />
+    <meta name="twitter:image:src" content="http://zotero.org/favicon.ico" />
+
+  </head>
+  <body>
+
+
+    <div class="container">
+      <div id="lib-container">
+        A reference from
+        <a href="http://www.zotero.org/" title="Visit Zotero" style="text-decoration:none">
+          <span style="font-size:18px"><span style="color: #BE0D0D">z</span>otero</span>
+        </a>
+        library
+        <div id="lib-title"></div>
+        <div id="upper-right-links">
+          <a href="javascript:alert('Something went wrong (or not ready yet)');"
+             id="zotlink" style="text-decoration:none; opacity:0.2"
+             >Show in library</a>
+        </div>
+      </div>
+      <div class="sixteen columns">
+        <div id="output" style="display:block">
+          Preparing to fetch data from Zotero ...
+        </div>
+        <div id="output-attachments"></div>
+      </div>
+      <div id="glass-cont">
+        <div id="glass" class="circle"></div>
+        <div id="glass-search">Search!</div>
+        <a id="glass2" class="circle" href="#"></a>
+        <div id="glass-rod1" class="glass-rod"></div>
+      </div>
+    </div>
+
+
+
+
+
+    <!-- Start banner -->
+
+
+    <nav id="mh1">
+      <ul id="mh1-top-menu">
+        <li class="mh1-menu-item">
+          <!-- <a id="mh1-title" title="Visit" href="http://ourcomments.org/psyblog/">OurComments on Psychology </a> -->
+          <span id="mh1-title" title="Menu">OurComments on Psychology </span>
+          <ul id="mh1-main-menu" class="Xmh1-menu-item">
+            <li id="mh1-about-menu-item" class="mh1-menu-item">
+              <a href="http://ourcomments.org/psyblog/about/"
+                 class="Xmh1-help"
+                 title="Read about OurComments on Psychology"
+                 >About</a>
+            </li>
+            <li id="mh1-blog-menu-item" class="mh1-menu-item">
+              <span>Blogs&nbsp;
+                  <a href="http://ourcomments.org/psyblog/site-list/"
+                     class="mh1-help"
+                     title="Info about blogs"
+                     >?</a></span>
+              <ul id="mh1-blog-list-menu" class="Xmh1-menu-item">
+                <li id="mh1-blog-list-container-blogs" class="Xmh1-menu-item">
+                  <div style="padding: 40px; width: 200px;">Fetching blog list...</div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <div id="mh1-search-symbol" title="Search!">
+        <div id="mh1-glass"></div>
+        <div id="mh1-glass-rod"></div>
+      </div>
+      <div id="mh1-hamburger">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <nav id="mh1-search">
+            <ul id="mh1-main-search">
+              <li>
+                <span id="mh1-search-psyblog-span">
+                  <input type="search"
+                         size="5"
+                         id="mh1-search-psyblog"
+                         title="Search all blogs in OurComments on Psychology"
+                         placeholder="Search all blogs"
+                         />
+                  <a href="http://ourcomments.org/psyblog/site-list/"
+                     class="mh1-help"
+                     title="Help for Search OurComments on Psychology"
+                     >?</a>
+                  <span class="mh1-menu-details"> - Search all blogs in OurComments on Psychology.</span>
+                </span>
+              </li>
+              <li>
+                <span id="mh1-zotero-search">
+                  <input type="search"
+                         size="5"
+                         id="mh1-search-zotero"
+                         title="Search our Zotero library (From Some Psychologists)"
+                         placeholder="Search Zotero" />
+                  <a href="http://ourcomments.org/psyblog/our-zotero-library/"
+                     class="mh1-help"
+                     title="Help for searching our Zotero library"
+                     >?</a>
+                  <span class="mh1-menu-details"> - Search our psychology related links.</span>
+                </span>
+              </li>
+            </ul>
+      </nav>
+
+      <?php
+        /* You may use PHP to get content! Your context is add_action('wp_footer', ..., 1001) */
+        // echo "Some text from PHP echo!";
+      ?>
+      <div style="clear:both"></div>
+    </nav>
+
+<style type="text/css">
+
+/* Tip: Use !important on all values - except those that you want to change with javascript. */
+
+#mh1 div, #mh1 span, #mh1 a, #mh1 ul, #mh1 li, {
+	border: 0;
+	font-family: inherit;
+	font-size: 100%;
+	font-style: inherit;
+	font-weight: inherit;
+	margin: 0;
+	outline: 0;
+	padding: 0;
+	vertical-align: baseline;
+}
+
+
+#mh1 {
+    font-family: Arial !important;
+    position:absolute;
+    z-index: 400 !important; /* wp toolbar 500 */
+    top:0;
+    left:0!important;
+    right:0 ! important;
+    display: block !important;
+    background:#005E8E !important;
+    xpadding: 6px!important;
+    font-size: 14px !important;
+    border-bottom: 1px solid white !important;
+}
+#mh1.mh1-wp {
+}
+#mh1 * {
+    box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+}
+
+#mh1 ::-webkit-input-placeholder { color:    #54A4CC!important; }
+#mh1 ::-moz-placeholder { color:    #54A4CC!important; }
+#mh1 :-ms-input-placeholder { color:    #54A4CC!important; }
+
+#mh1 a {
+    color: #7CD3FF!important;
+    text-decoration: none!important;
+    display: inline-block !important;
+    margin-left: 0 !important;
+}
+#mh1 #mh1-title {
+    font-weight: bold!important;
+    color: #7CD3FF!important;
+    padding: 6px !important;
+}
+#mh1 a.mh1-help {
+    background-color:#008ed7 !important;
+    color: #eee!important;
+    border-radius: 6px!important;
+    padding-left:3px!important;
+    padding-right:3px!important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+#mh1 a.mh1-help:hover {
+    color: black!important;
+    background-color: #82c8ec !important;
+}
+
+/* Mobile style menu icon */
+#mh1 #mh1-hamburger {
+    float: right !important;
+    margin: 0 !important;
+    margin-right: 4px !important;
+    border-radius: 3px 3px 3px 3px !important;
+    cursor: pointer !important;
+    display: inline-block !important;
+    height: 22px !important;
+    padding: 2px 2px 2px !important;
+    position: relative !important;
+    width: 24px !important;
+    background: #7CD3FF!important;
+}
+#mh1 #mh1-hamburger:hover {
+    background: #45ade2!important;
+}
+
+/* The white stripes in the hamburger button */
+#mh1 #mh1-hamburger div {
+    background-color: #bee9ff !important;
+    height: 2px !important;
+    margin-top: 3px !important;
+    width: auto !important;
+}
+
+#mh1 ul {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style-position: outside !important;
+    list-style-type: none !important;
+    list-style-image: none !important;
+}
+#mh1 ul li {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+#mh1 ul li > * { display: inline-block !important; }
+
+#mh1 ul {
+    display: inline-block !important;
+}
+#mh1 ul li {
+    display: inline-block !important;
+}
+/* #mh1 * { z-index: inherit !important; } */
+
+#mh1 #mh1-search {
+    float: right !important;
+    transition: all 0.5s ease-in-out !important;
+    z-index: 400 !important;
+}
+
+#mh1 input[type="search"] {
+    display: inline-block !important;
+    margin: 0 !important;
+    padding: 2px!important;
+    padding-top: 0px!important;
+    padding-bottom: 0px!important;
+    border-width: 1px!important;
+    border-color: #A9E3FF !important;
+    border-style: solid;
+    border-radius: 5px!important;
+    background-color: #CBEEFF!important;
+}
+#mh1 input[type="search"]:hover {
+    background-color: rgb(255, 255, 255) !important;
+}
+#mh1 input[type="search"]:focus {
+    background-color: rgb(255, 255, 255) !important;
+    border-color: blue;
+    background-position: right !important;
+    background-image: url(http://www.google.com/cse/intl/en/images/google_custom_search_watermark.gif);
+    background-repeat: no-repeat !important;
+}
+/* #mh1 input[type="search"]#mh1-search-psyblog:focus { } */
+
+    /* Blog list menu */
+    #mh1-blog-list-header {
+        padding: 6px !important;
+        padding-left: 40px !important;
+        background: #eee !important;
+    }
+    #mh1-main-menu a {
+        padding: 0 !important;
+    }
+    #mh1-top-menu {
+        display: inline-block !important;
+        cursor: pointer !important;
+    }
+    #mh1-top-menu * {
+        font-size: 14px !important;
+    }
+    #mh1 #mh1-top-menu.mh1-hover-menu:hover #mh1-main-menu {
+        display: block !important;
+    }
+    #mh1 #mh1-top-menu #mh1-main-menu.mh1-visible-submenu {
+        display: block !important;
+    }
+    #mh1 #mh1-main-menu {
+        display: none !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0% !important;
+        margin: 0 !important;
+    }
+    #mh1 #mh1-top-menu ul {
+        background:#005E8E !important;
+    }
+    #mh1 #mh1-top-menu ul {
+        width: auto !important;
+    }
+    #mh1 #mh1-top-menu * {
+        margin: 0 !important;
+    }
+    #mh1 #mh1-top-menu:after {
+        content: ""; clear: both !important; display: block !important;
+    }
+    #mh1 #mh1-top-menu ul li {
+        display: block !important;
+        width: auto !important;
+    }
+    /* #mh1 #mh1-top-menu ul li * { */
+    #mh1 .mh1-menu-item {
+        color:#cbeeff!important;
+        display: block !important;
+    }
+    #mh1-main-menu .mh1-menu-item > a, #mh1-main-menu .mh1-menu-item > span {
+        padding: 15px 20px !important;
+        xwidth: 300px !important;
+    }
+    #mh1 .mh1-menu-item:hover {
+        background-color: black !important;
+        text-shadow: none !important;
+    }
+    #mh1 #mh1-main-menu li {
+	border-left: 1px solid #3A7997!important;
+	border-top: 1px solid #3A7997!important;
+        border-bottom: 1px solid #14303F !important;
+    }
+    #mh1 #mh1-blog-menu-item {
+        position: relative !important;
+    }
+    #mh1 #mh1-blog-menu-item #mh1-blog-list-menu {
+        display: none !important;
+        position: absolute !important;
+        top: 0% !important;
+        left: 80px !important;
+    }
+    #mh1 #mh1-blog-menu-item #mh1-blog-list-menu li {
+        width: 240px !important;
+    }
+    #mh1 #mh1-blog-menu-item.mh1-hover-menu:hover #mh1-blog-list-menu {
+        display: block !important;
+    }
+    #mh1 #mh1-blog-menu-item #mh1-blog-list-menu.mh1-visible-submenu {
+        display: block !important;
+    }
+
+/* A little fun with searching!
+   ============================ */
+#mh1-glass {
+    position: absolute !important;
+    top: 6px !important;
+    left: 6px !important;
+    border: 2px solid #7CD3FF !important;
+    border-radius: 50% !important;
+    width: 12px !important;
+    height: 12px !important; 
+    display: block !important;
+}
+#mh1-glass-rod {
+    transform: rotate(-45deg) !important;
+    -webkit-transform: rotate(-45deg) !important;
+    width: 2px !important;
+    height: 12px !important;
+    position: absolute !important;
+    top: 12px !important;
+    left: 18px !important;
+    background-color: #7CD3FF !important;
+}
+#mh1-search-symbol {
+    display: inline-block !important;
+    width: 32px !important;
+    height: 28px !important;
+    position: relative !important;
+    cursor: pointer !important;
+    float: right !important;
+    padding: 2px !important;
+}
+#mh1-search-symbol:hover {
+    background: black !important;
+}
+#mh1-search-symbol * {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+
+/* Screen width adjustments */
+@media screen and ( min-width: 900px ) {
+    #mh1 #mh1-hamburger { display: none !important; }
+    #mh1 #mh1-search-symbol { display: none !important; }
+    #mh1 #mh1-search {
+        margin-top: 5px !important;
+        position: static !important;
+        display: inline-block !important;
+        overflow: visible !important;
+        width: auto !important;
+        float: right !important;
+    }
+    #mh1 #mh1-main-search {
+        display: inline-block;
+        position: static;
+        margin-right: 8px !important;
+        background-color: transparent !important;
+        width: auto !important;
+        float: align: right;
+    }
+    /* #mh1 ul { display: inline-block !important; } */
+    /* #mh1 ul li { display: inline-block !important; border: none !important; } */
+    /* #mh1 ul li > * { display: inline-block !important; xpadding: 0 !important; margin-left: 20px !important; } */
+
+    #mh1 .mh1-menu-details { display: none !important; }
+
+    #mh1 input[type="search"] {
+        width: 130px!important;
+    }
+    #mh1 input[type="search"]:focus {
+        transition: all 0.5s ease-in-out !important;
+        width: 440px !important;
+        padding: 4px !important;
+    }
+    #mh1 input[type="search"]:hover {
+        transition: all 0.5s ease-in-out !important;
+    }
+
+
+
+
+}
+@media screen and ( max-width: 899px ) {
+    #mh1 #mh1-hamburger { display: inline-block !important; }
+    #mh1 #mh1-hamburger { display: none !important; }
+    #mh1 #mh1-search {
+        display: none;
+        height: 0;
+    }
+    #mh1 #mh1-search {
+        position: absolute;
+        xdisplay: none;
+        xheight: 0;
+        overflow: hidden !important;
+        float: none !important;
+        max-width: 400px;
+        left: auto !important;
+        right: 0 !important;
+        border: 2px solid white;
+        border-radius: 30px !important;
+        border-top-right-radius: 0px !important;
+        background-color: inherit !important;
+    }
+    #mh1 #mh1-search-sym:hover #mh1-main-search {
+        display: block !important;
+        height: auto;
+    }
+    #mh1-main-search ul {
+        display: block !important;
+        margin-left: 0 !important;
+        background-color: inherit !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+    #mh1-main-search .mh1-menu-details { display: inline-block!important; color: #7CD3FF !important; }
+    #mh1-main-search ul { display: block !important; }
+    #mh1-search ul li {
+        width: 100% !important;
+        border-bottom: 1px solid white !important;
+    }
+    #mh1-search ul li > span {
+        display: block !important;
+        padding: 20px !important;
+        padding-left: 20px !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+    #mh1 #mh1-main-search { float: none !important; }
+
+
+    #mh1 input[type="search"] {
+        width: 100% !important;
+        font-size: 16px; /* Minimu to avoid zoom on android */
+        display: block !important;
+        padding: 4px !important;
+        background-color: #e2f5ff!important;
+        margin-bottom: 4px !important;
+    }
+}
+
+</style>
+
+<script type="text/javascript">
+(function() {
+    var ham = document.getElementById("mh1-hamburger");
+    var ham = document.getElementById("mh1-search-symbol");
+    var menus = document.getElementById("mh1-search");
+    var banner = document.getElementById("mh1");
+    var html = document.getElementsByTagName("html")[0];
+    var wpadminbar = document.getElementById("wpadminbar");
+    ham.addEventListener("click", function() {
+        console.log("menus display, height", menus.style.display, menus.style.height);
+        var menusShown = false;
+        var menusCStyle = window.getComputedStyle(menus);
+        var menusHeight = menusCStyle.height;
+        console.log("---- menusHeight", menusHeight);
+        if (0 != parseInt(menusHeight)) menusShown = true;
+        if (!menusShown) {
+            console.log("menus", menus);
+            var bannerPosition = banner.style.position; // "absolute";
+            if ("" == bannerPosition) {
+                menus.style.position = "absolute";
+            } else {
+                menus.style.position = bannerPosition;
+            }
+            // console.log("banner.style.position", banner.style.position);
+            // console.log("menus.style.position", menus.style.position);
+            var bannerBR = banner.getBoundingClientRect();
+            var menuTop = bannerBR.bottom;
+            console.log("bannerBR.bottom", bannerBR.bottom, "bannerBR.height", bannerBR.height);
+            menus.style.top = menuTop + "px";
+            // console.log("menus.style.top", menus.style.top);
+            // Get height:        
+            menus.style.visibility = "hidden";
+            menus.style.display = "block";
+            menus.style.height = "auto";
+            var mr = menus.getBoundingClientRect();
+            menus.style.visibility = null;
+            var newHeight = mr.height;
+            console.log("New height:", newHeight, mr);
+            if ("absolute" == menus.style.position) {
+                var htmlMTopBcr = html.getBoundingClientRect().top;
+                // console.log("htmlMarginTop from bcr", htmlMTopBcr);
+                var htmlMTopGcs = window.getComputedStyle(html).marginTop;
+                // console.log("htmlMarginTop from gcs", htmlMTopGcs);
+                // console.log("mr", mr, mr.top);
+                // console.log("window.scrollY", window.scrollY);
+                menuTop += window.scrollY;
+                // Fix-me: For some reason I do not understand at all
+                // I have to subtract the height of wpadminbar here.
+                if (wpadminbar) {
+                    var wpBR = wpadminbar.getBoundingClientRect();
+                    menuTop -= wpBR.height;
+                }
+                menus.style.top = menuTop + "px";
+                // console.log("menus.style.top", menus.style.top);
+                // Tell we want the position again:
+                mr = menus.getBoundingClientRect();
+                // Fix-me: Did not help since getBoundingClientRect
+                // does not wait for display update.
+            }
+            // Unfortunately this prevents transition,
+            // but we can work around it by:
+            // 1. Set a height:
+            menus.style.height = "1px";
+            // 2. Set the real height in a timeout:
+            setTimeout(function() {
+                menus.style.height = newHeight+"px";
+                menus.style.borderWidth = "2px";
+            }, 10);
+        } else {
+            menus.style.height = "0";
+            menus.style.borderWidth = "0";
+        }
+    });
+})();
+(function() {
+    var menus = document.getElementById("mh1-search");
+
+    var zField = document.getElementById("mh1-search-zotero");
+    zField.addEventListener("focus", function(ev) {
+        menus.style.height = "auto";
+    });
+    zField.addEventListener("keyup", function(ev) {
+        if (13 == ev.keyCode) {
+            var url = "http://ourcomments.org/psych/zfsp.html?q="+encodeURIComponent(zField.value);
+            // window.location.href = url;
+            var eA = document.createElement("a");
+            eA.setAttribute("href", url);
+            eA.setAttribute("target", "_blank");
+            eA.dispatchEvent(new MouseEvent("click"));
+        }
+    });
+    var pField = document.getElementById("mh1-search-psyblog");
+    pField.addEventListener("focus", function(ev) {
+        menus.style.height = "auto";
+    });
+    pField.addEventListener("keyup", function(ev) {
+        if (13 == ev.keyCode) {
+            var url = "http://dl.dropboxusercontent.com/u/848981/it/cw/cse-psyblog.html?q="
+                +encodeURIComponent(pField.value);
+            // window.location.href = url;
+            var eA = document.createElement("a");
+            eA.setAttribute("href", url);
+            eA.setAttribute("target", "_blank");
+            eA.dispatchEvent(new MouseEvent("click"));
+        } else {
+            var len = pField.value.length;
+            if (0 == len) {
+                pField.style.backgroundImage = null;
+            } else {
+                pField.style.backgroundImage = "none";
+            }
+        }
+    });
+})();
+(function() {
+    var touchDevice = false;
+    if (('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0) ||
+        (navigator.msMaxTouchPoints > 0)) {
+        /* browser with either Touch Events of Pointer Events
+           running on touch-capable device */
+        touchDevice = true;
+        // alert("touchDevice");
+    }
+    var mh1Title = document.getElementById("mh1-title");
+    mh1Title.addEventListener("click", function() {
+        var mm = document.getElementById("mh1-main-menu");
+        mm.classList.toggle("mh1-visible-submenu");
+    });
+    var blogMenuItem = document.getElementById("mh1-blog-menu-item");
+    blogMenuItem.addEventListener("click", function() {
+        var mm = document.getElementById("mh1-blog-list-menu");
+        mm.classList.toggle("mh1-visible-submenu");
+    });
+    if (!touchDevice) {
+        var topMenuItem = document.getElementById("mh1-top-menu");
+        topMenuItem.classList.add("mh1-hover-menu");
+        blogMenuItem.classList.add("mh1-hover-menu");
+    }
+    var blogListTop = document.getElementById("mh1-top-menu");
+    var blogListContainer = document.getElementById("mh1-blog-list-container-blogs");
+    var blogList;
+    var rq;
+    function request_blog_list() {
+        rq = new XMLHttpRequest();
+        rq.onload = function() {
+            console.log(rq.responseText);
+            blogList = rq.responseText;
+            var tempDiv = document.createElement("div");
+            tempDiv.innerHTML = blogList;
+            while (blogListContainer.firstChild) blogListContainer.removeChild(blogListContainer.firstChild);
+            // console.log("tempDiv", tempDiv);
+            blogListContainer.appendChild(tempDiv.firstChild.firstChild);
+            var liMs = blogListContainer.querySelectorAll("li");
+            console.log("liMs", liMs);
+            for (var i=0, len=liMs.length; i<len; i++) {
+                console.log(liMs[i]);
+                liMs[i].classList.add("mh1-menu-item");
+            }
+        };
+        rq.onerror = function() {
+            console.log("Could not fetch blog list.<br />Error:"+rq.responseText);
+            blogList = '<div style="background:yellow; padding:20px; width:200px; border:1px solid red;">'
+                +'Could not fetch blog list.<br />Error: '+rq.responseText+'</div>';
+            blogListContainer.innerHTML = blogList;
+        };
+        rq.ontimeout = function() {
+            console.log("Could not fetch blog list.<br />Timeout:"+rq.responseText);
+            var blogList = '<div style="color: red; padding:20px; width:100%; border:1px solid red;">'
+                +'Could not fetch blog list.<br />Timeout '+rq.responseText+' (trying again...)</div>';
+            blogListContainer.innerHTML = blogList;
+            setTimeout( function() { request_blog_list(); }, 1000);
+        };
+        rq.timeout = 2000; // milliseconds, for Powweb=2000
+        // ajaxurl is only available for admin, or???
+        url = ajaxurl + "?action=mh1_blog_list"+"&nc" + Math.random() + "=1";
+        console.log("blog list url", url);
+        // Fix-me: convert to POST
+        rq.open("GET", url, true);
+        rq.send();
+    }
+
+    // blogListTop.addEventListener("mouseover", function() {
+    blogMenuItem.addEventListener("mouseover", function() {
+        if (rq) return;
+        if (typeof ajaxurl == 'undefined') {
+            // console.log("blogListTop, no ajaxurl");
+            ajaxurl = "http://ourcomments.org/psyblog/wp-admin/admin-ajax.php"; 
+            if (typeof ajaxurl == 'undefined') {
+                var s = document.createElement("style");
+                s.setAttribute("type", "text/css");
+                s.appendChild(document.createTextNode(
+                    "#mh1 #mh1-top-menu:hover #mh1-main-menu { display:none!important; }"));
+                document.body.appendChild(s);
+                rq = 1;
+                return;
+            }
+        }
+        if (ajaxurl) {
+            if (!blogList) {
+                request_blog_list();
+            }
+        }
+    });
+})();
+
+
+(function() {
+    // You probably do not want to change this function, but just in
+    // case I leave it here right under your eyes.. ;-)
+
+    function addPixels(oldPx, addPx) {
+        var iOld = parseInt(oldPx);
+        if (isNaN(iOld)) iOld = 0;
+        var iAdd = parseInt(addPx);
+        if (isNaN(iAdd)) iAdd = 0;
+        return (iOld+iAdd)+"px";
+    }
+    var eltStyle = document.createElement("style");
+    eltStyle.setAttribute("type", "text/css");
+    eltStyle.appendChild(document.createTextNode("dummy"));
+    document.getElementsByTagName("head")[0].appendChild(eltStyle);
+    function setHtmlMarginTop(marg) {
+        // We need to add a style element for the html margin-top
+        // since it is set with !important and rules. Even direct
+        // element styles with important are then overriden.
+        eltStyle.replaceChild(
+            document.createTextNode("html {margin-top:"+marg+"!important;}"),
+            eltStyle.firstChild
+        );
+    }
+    var eMh1 = document.getElementById("mh1");
+    var inWP = eMh1.classList.contains("mh1-wp");
+    if (!inWP) {
+        var eMh1Shadow = document.createElement("div");
+        eMh1Shadow.setAttribute("id", "mh1-shadow");
+        document.body.insertBefore(eMh1Shadow, document.body.firstChild);
+    }
+    var mh1Height;
+    var eltAdminFake;
+    if (inWP && !document.body.classList.contains("admin-bar")) {
+        // Looks like themes are looking for .admin-bar in body and then
+        // #wpadminbar. Let us for the moment fake those if they are not there.
+        // console.log("did not find admin-bar");
+        document.body.classList.add("admin-bar");
+        eltAdminFake = document.createElement("div");
+        eltAdminFake.setAttribute("id", "wpadminbar");
+        var s = eltAdminFake.style;
+        // Seems like we now must make us at least 32px tall (at least
+        // for some themes):
+        if (parseInt(mh1Height) < 32) {
+            mh1Height = "32px";
+            // fix-me: looks like jQuery: ???
+            mh1.css("height", mh1Height);
+        }
+        s.height = mh1Height;
+        s.minHeight = mh1Height;
+        s.position = "fixed";
+        s.top = "-"+mh1Height;
+        s.left = "0";
+        // Try to keep it small:
+        s.padding = "0";
+        s.margin = "0";
+        s.fontSize = "8px";
+        s.lineHeight = "10px";
+        document.body.appendChild(eltAdminFake);
+    } 
+    var eAdmin = document.getElementById("wpadminbar");
+    var eHtml = document.getElementsByTagName("html")[0];
+    function doResizing() {
+        // console.log("doResizing ----------------");
+        var rMh1 = eMh1.getBoundingClientRect();
+        function adjustHtmlMarginTop() {
+            // mh1Height = jqMh1.outerHeight();
+            mh1Height = rMh1.height;
+            // console.log("mh1Height", mh1Height);
+            var adminHeight = 0;
+            if (!eltAdminFake) adminHeight = window.getComputedStyle(eAdmin).height;
+            // console.log("adminHeight", adminHeight);
+            var newHtmlMarginTop = addPixels(adminHeight, mh1Height);
+            // console.log("newHtmlMarginTop", newHtmlMarginTop);
+            // console.log("adminHeight", adminHeight);
+            eMh1.style.top = adminHeight;
+            // console.log(eMh1.style.top, eMh1);
+            setHtmlMarginTop(newHtmlMarginTop);
+        }
+        if (inWP)
+            adjustHtmlMarginTop();
+        else
+            eMh1Shadow.style.height = rMh1.height+"px";
+        var htmlWidth = eHtml.clientWidth;
+        // console.log("htmlWidth", htmlWidth);
+        if (htmlWidth > 699) {
+            var menus = document.getElementById("mh1-search");
+            menus.style.height = null;
+            menus.style.display = null;
+            menus.style.position = null;
+        }
+    }
+
+    // https://developer.mozilla.org/en-US/docs/Web/Reference/Events/resize
+    var optimizedResize = (function() {
+
+        var callbacks = [],
+        changed = false,
+        running = false;                     
+
+        // fired on resize event
+        function resize() {
+            if (!running) {
+                changed = true;
+                loop();
+            }
+        }
+
+        // resource conscious callback loop
+        function loop() {
+            if (!changed) {     
+                running = false;       
+            }
+            else {
+                changed = false;
+                running = true;            
+
+                callbacks.forEach(function(callback) {
+                    callback();
+                });
+
+                window.requestAnimationFrame(loop);
+            }
+        }
+
+        // adds callback to loop
+        function addCallback(callback) {
+            if (callback) {
+                callbacks.push(callback);
+            }
+        }
+
+        return {
+            // initalize resize event listener
+            init: function(callback) {
+                if (window.requestAnimationFrame) { 
+                    window.addEventListener('resize', resize);
+                    addCallback(callback);
+                }
+            },
+
+            // public method to add additional callback
+            add: function(callback) {
+                addCallback(callback);
+            },
+            fakeResize: function() { resize(); }
+        }
+    })();
+
+    // start resizing process
+    optimizedResize.init(
+        doResizing
+    );
+    // Fix-me: This one does not work correctly - there is a 1px
+    // glitch. Tried a fake resize event. Did not correct it, but
+    // needed anyway.
+    // 
+    // adjustHtmlMarginTop();
+    optimizedResize.fakeResize();
+
+})();
+</script>
+
+
+    <!-- End banner -->
+
+
+
+  </body>

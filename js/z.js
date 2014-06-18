@@ -19,8 +19,10 @@ window.onload = function(){
         var urlBuilder = new ZURLBuilder(true, grpId);
         var zURL = urlBuilder.latestItems(20);
         ZReader.setupToggleForFetch(zURL, zLatest,
-                                    "Latest updates (last week, probably not yet in search below)",
-                                    "Displays the latest updates which might not have been found by Google yet",
+                                    "Latest updates",
+                                    "Displays the latest updates (last week)\n"
+                                    +"which might not have been found by Google yet."
+                                    +"\n\n(Bug: Does not display update from all lib currently!)",
                                     displayLatestList);
     }
 }
@@ -29,12 +31,17 @@ window.onload = function(){
 // var m = new RegExp("[^?]*").exec(myHref);
 // var searchURL = m[0];
 // var searchURL = "http://ourcomments.org/psych/zfsp.html";
-var formatterURL = "http://dl.dropboxusercontent.com/u/848981/it/cw/zformat.html";
+
+// var formatterURL = "http://dl.dropboxusercontent.com/u/848981/it/z/js/zformat.html";
 var formatterURL = "http://ourcomments.org/cgi-bin/zformat.php";
+
+
+// Fix-me: get latest from all relevant libraries!!!
 
 function displayLatestList(jsons, outputElt) {
     var fragment = document.createDocumentFragment();
     var afterDate = new Date();
+    var accessDateObj;
     afterDate.setDate(afterDate.getDate()-7);
     var mkElt = ZReader.mkElt;
     for (var i=0; i<jsons.length; i++) {

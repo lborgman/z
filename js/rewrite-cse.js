@@ -7,7 +7,7 @@
 // ?format=atom&content=json,bib,html
 // https://www.zotero.org/groups/from_some_psychologists/items/itemKey/5HC7ATCU
 
-// http://dl.dropboxusercontent.com/u/848981/it/cw/zformat.html?z=http://www.zotero.org/groups/from_some_psychologists/items/itemKey/KZMETK6R
+// http://dl.dropboxusercontent.com/u/848981/it/z/js/zformat.html?z=http://www.zotero.org/groups/from_some_psychologists/items/itemKey/KZMETK6R
 
 (function() {
     // External, called on search form:
@@ -74,7 +74,7 @@
             var key = match[2];
             var grpId = groupIds[grp];
             // console.log(origURL);
-            // lnks[i].href = "http://dl.dropboxusercontent.com/u/848981/it/cw/zformat.html"
+            // lnks[i].href = "http://dl.dropboxusercontent.com/u/848981/it/z/zformat.html"
             lnks[i].href = "http://ourcomments.org/cgi-bin/zformat.php"
             // Do I need to encodeURIComponent here? I can't see I need it.
                 // +"?z="+origURL
@@ -88,7 +88,7 @@
             delete lnks[i].dataset.cturl;
             var children = lnks[i].childNodes;
             // console.log(children, children.length);
-            txten = lnks[i];
+            // txten = lnks[i];
             // console.log(txten);
             first[i] = lnks[i].firstChild;
             var currentTitle = lnks[i].innerText;

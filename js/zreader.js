@@ -15,6 +15,12 @@ ZURLBuilder.prototype.idURL = function() {
     console.log("idURL", idURL);
     return idURL;
 }
+ZURLBuilder.prototype.idInfo = function() {
+    var idURL =
+        this.idURL();
+    console.log("idURL", idURL);
+    return idURL;
+}
 ZURLBuilder.prototype.latestItems = function(howMany) {
     var liURL =
         this.idURL()
@@ -65,12 +71,13 @@ ZURLBuilder.prototype.children = function(itemKey) {
 /////////////////////////////////////////////
 // ZReader with static functions
 
-function ZReader(zURL, outputElt, jsonFun, xmlFun, readyFun) {
+function ZReader(zURL, outputElt, jsonFun, xmlFun, readyFun, failFun) {
     this.zURL = zURL;
     this.outputElt = outputElt;
     this.jsonFun = jsonFun;
     this.xmlFun = xmlFun;
     this.readyFun = readyFun;
+    this.failFun = failFun;
 }
 // Fix-me: clean up!
 ZReader.prototype.onload = function() {
@@ -97,9 +104,12 @@ ZReader.prototype.onload = function() {
         if (this.outputElt) {
             this.outputElt.classList.remove("zreader-requested");
             this.outputElt.classList.add("zreader-error");
-            this.outputElt.appendChild(ZReader.mkElt("div", null,
-                                                     "Couldn't read the requested file,<br />status = "
-                                                     + this.rq.status.toString()));
+            this.outputElt.appendChild(
+                ZReader.mkElt("div", null,
+                              ["Couldn't read the requested file",
+                               ZReader.mkElt("br"),
+                               "STATUS = " + this.rq.status.toString()
+                              ]));
         }
     }
 }
@@ -112,7 +122,7 @@ ZReader.prototype.request = function() {
     }
 }
 
-ZReader.zReaderRequest = function(zURL, outputElt, jsonFun, xmlFun, readyFun) {
+ZReader.zReaderRequest = function(zURL, outputElt, jsonFun, xmlFun, readyFun, failFun) {
     console.log("zRR", zURL);
     var status = outputElt ? outputElt.dataset.zReaderStatus : undefined;
     switch (status) {
@@ -138,7 +148,7 @@ ZReader.zReaderRequest = function(zURL, outputElt, jsonFun, xmlFun, readyFun) {
                     while (outputElt.firstChild) outputElt.removeChild(outputElt.firstChild);
                 }
                 var zXml = rq.responseText;
-                console.log("zXml", zXml);
+                // console.log("zXml", zXml);
                 if (xmlFun) xmlFun(zXml, outputElt);
                 if (jsonFun) {
                     var json = ZReader.parseZxml2jsons(zXml);
@@ -151,9 +161,13 @@ ZReader.zReaderRequest = function(zURL, outputElt, jsonFun, xmlFun, readyFun) {
                     outputElt.dataset.zReaderStatus = "failed";
                     outputElt.classList.remove("zreader-requested");
                     outputElt.classList.add("zreader-error");
-                    outputElt.appendChild(ZReader.mkElt("div", null,
-                                                        "Couldn't read the requested file,<br />status = "
-                                                        + rq.status.toString()));
+                    outputElt.appendChild(
+                        ZReader.mkElt("div", null,
+                                      ["Couldn't read the requested file",
+                                       ZReader.mkElt("br"),
+                                       "status = " + rq.status.toString()
+                                      ]));
+                    if (failFun) failFun();
                 }
             }
         };
@@ -167,7 +181,7 @@ ZReader.zReaderRequest = function(zURL, outputElt, jsonFun, xmlFun, readyFun) {
 ZReader.zReaderDump = function(URL) {
     ZReader.zReaderRequest(URL, null, null, function(xml) {console.log("URL recieved", URL, xml); });
 }
-ZReader.setupToggleForFetch = function(zURL, outputContainer, title, popTitle, displayFun) {
+ZReader.setupToggleForFetch = function(zURL, outputContainer, title, popTitle, displayFun, failFun) {
     var fragment = document.createDocumentFragment();
     var leftArrow = String.fromCharCode(0x25b6);
     var downArrow = String.fromCharCode(0x25bc);
@@ -193,7 +207,7 @@ ZReader.setupToggleForFetch = function(zURL, outputContainer, title, popTitle, d
         } else {
             outputElt.style.display = "block";
             arrow.replaceChild(document.createTextNode(downArrow), arrow.firstChild);
-            ZReader.zReaderRequest(zURL, outputInnerElt, displayFun);
+            ZReader.zReaderRequest(zURL, outputInnerElt, displayFun, null, null, failFun);
         }
     });
 }
