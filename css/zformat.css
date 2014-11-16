@@ -146,8 +146,6 @@
 	  border: 1px solid #aaa;
 	  border-top: 1px solid #ccc;
 	  border-left: 1px solid #ccc;
-	  -moz-border-radius: 3px;
-	  -webkit-border-radius: 3px;
 	  border-radius: 3px;
 	  color: #444;
 	  display: inline-block;
@@ -225,8 +223,6 @@
 		border: 1px solid #ccc;
 		padding: 6px 4px;
 		outline: none;
-		-moz-border-radius: 2px;
-		-webkit-border-radius: 2px;
 		border-radius: 2px;
 		font: 13px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 		color: #777;
@@ -550,11 +546,22 @@ a.related-item {
     border-left: 1px #ccc solid;
     border-bottom: 1px #ccc solid;
 }
+a#copy-ref {
+    background: black;
+    color: orange;
+    padding: 20px;
+    text-decoration: none;
+}
+a#copy-ref:hover {
+    color: yellow;
+}
 #ref-title {
     font-size: 24px;
-    line-height: 30px;
+    xline-height: 30px;
+    margin-bottom: 6px;
+    line-height: 100%;
 }
-a#ref-title {
+#ref-title a {
     text-decoration: none;
 }
 a:hover {
@@ -570,7 +577,7 @@ a:hover {
 #upper-right-links a {
     display: inline-block;
 }
-#lib-title a {
+#lib-title {
     text-transform: capitalize;
     xfont-size: 35px;
     xline-height: 40px;
@@ -583,6 +590,23 @@ a:hover {
 #lib-container {
     text-align: right;
 }
+
+#libinfo {
+    display: none;
+    padding: 20px;
+    border: 1px solid #eee;
+    background: #f1faff;
+    margin-bottom: 20px;
+}
+#libinfo .libinfo-header {
+    font-weight: bold;
+    font-size: 120%;
+    margin-bottom: 10px;
+}
+#libinfo .libinfo-header a {
+    text-transform: capitalize;
+}
+
 .h1-title {
     display: inline;
 }
@@ -669,6 +693,12 @@ details#zot-rel-problems span {
 #output-attachments .attachment.color-pubmed {
     border-radius: 3px;
     background: #aaa;
+}
+#output-attachments .attachment.color-book {
+    background: cornsilk;
+}
+#output-attachments .attachment.color-related {
+    background: orange;
 }
 #output-attachments .attachment.color-other {
     background: white;
@@ -757,7 +787,7 @@ label.tag.checked-tag {
 }
 #glass-cont {
     transition: opacity 1.2s;
-    opacity: 0.2;
+    opacity: 0.07;
     width: 100px;
     height: 100px;
     position: absolute;
@@ -767,12 +797,12 @@ label.tag.checked-tag {
     transform: scale(0.6);
     -webkit-transform: scale(0.6);
     z-index: 4;
-    cursor: pointer;
+    xcursor: pointer;
 }
-#glass-cont:hover {
-    opacity: 1;
-    transition: opacity 1s;
-}
+/* #glass-cont:hover { */
+/*     opacity: 1; */
+/*     transition: opacity 1s; */
+/* } */
 #glass-search {
     position: absolute;
     top: 20px;

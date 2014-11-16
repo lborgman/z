@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script>
+      var xhr = new XMLHttpRequest();
+      xhr.open("get", "http://ourcomments.org/cgi-bin/zlibdesc.php?zlib=https://www.zotero.org/groups/from_some_psychologists", true);
+      xhr.onload = function(){
+          if(xhr.status >= 200 && xhr.status < 400) {
+              var zXml = xhr.responseText;
+              console.log(zXml);
+              var here = document.querySelector("#here");
+              here.innerHTML = zXml;
+          } else {
+              console.log("Couldn't read the requested file, status = " + xhr.status.toString());
+          }
+      };
+      xhr.send();
+      
+               </script>
+  </head>
+  <body>
+    <div id="here">
+      Put it here!
+    </div>
+  </body>
+</html>

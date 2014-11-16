@@ -1,12 +1,19 @@
-/* Fix things I do not like in Skeleton
-   ==================================== */
-i {
-    font-style: italic;
+body {
+    font-size: 14px;
+}
+i { font-style: italic; }
+
+.unselectable {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 /* Breaks googles layout!
  * { box-sizing: border-box !important; }
  */
+#header-div * { box-sizing: border-box; }
 
 #logo-etc-div {
     float:right;
@@ -28,11 +35,19 @@ i {
     margin-bottom: 8px;
     font-size: 14px;
     border-radius: 8px;
+    cursor: pointer;
 }
 .top-btn:hover {
     background-color: black;
 }
-.top-btn:focus, a:focus, .gsc-cursor-page:focus  {
+/* :focus { */
+/*     xbackground: #ee0 !important; */
+/*     outline: #ee0 auto 5px; */
+/* } */
+/* .top-btn:focus, a:focus, .gsc-cursor-page:focus  { */
+/* .gsc-result :focus { */
+/* #___gcse_0 :focus { */
+:focus {
     background: #ee0 !important;
 }
 .less-important {
@@ -192,17 +207,17 @@ a:focus {
     color: #60c;
 }
 .myNew-abs-div {
-    font-size: 13px;
+    font-size: 14px;
     color: #963;
 }
 .myNew-url-div {
-    font-size: 13px;
+    font-size: 14px;
     color: #060;
     word-wrap: break-word;
     word-break: break-all;
 }
 .myNew-date {
-    font-size: 13px;
+    font-size: 14px;
     color: #cc2900;
 }
 .myNew-div {
@@ -211,11 +226,16 @@ a:focus {
 
 #zlatest span.zreader-toggle-fetch {
     cursor: pointer;
+    line-height: 1.5;
 }
 #zlatest span.zreader-toggle-fetch:hover {
-    xcolor: white;
-    background-color: black;
+    background-color: white;
+    text-decoration: underline;
 }
+#zlatest-show {
+    cursor: pointer;
+}
+
 .zReaderRequest-info {
     font-style: italic;
 }
@@ -227,9 +247,10 @@ a:focus {
 /* #zlatest div.zreader-toggle-fetch-output { */
 #zlatest {
     xbackground: orange;
-    background: #005E8E;
-    color: #7CD3FF;
-    padding: 13px;
+    xbackground: #005E8E;
+    xcolor: #7CD3FF;
+    color: #ddd;
+    padding: 14px;
     border: 1px solid #FFEECF;
     padding-top: 2px;
     padding-bottom: 2px;
@@ -246,16 +267,19 @@ a:focus {
     -o-transition: all 3s ease-in-out;
     transition: all 3s ease-in-out;
 }
+.zreader-request-info {
+    cursor: wait;
+}
 .zReader-requested {
     max-height: 50px;
 }
 .zreader-received {
-    max-height: 2000px;
+    xmax-height: 2000px;
 }
 
 /* External links
    ============================================== */
-a[target]::after {
+a[target]::xafter {
     margin-left: 10px;
     content: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtODI2LjQyOSAtNjk4Ljc5MSkiPjxyZWN0IHdpZHRoPSI1Ljk4MiIgaGVpZ2h0PSI1Ljk4MiIgeD0iODI2LjkyOSIgeT0iNzAyLjMwOSIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjMDZjIi8+PGc+PHBhdGggZD0iTTgzMS4xOTQgNjk4Ljc5MWg1LjIzNHY1LjM5MWwtMS41NzEgMS41NDUtMS4zMS0xLjMxLTIuNzI1IDIuNzI1LTIuNjg5LTIuNjg5IDIuODA4LTIuODA4LTEuMzExLTEuMzExeiIgZmlsbD0iIzA2ZiIvPjxwYXRoIGQ9Ik04MzUuNDI0IDY5OS43OTVsLjAyMiA0Ljg4NS0xLjgxNy0xLjgxNy0yLjg4MSAyLjg4MS0xLjIyOC0xLjIyOCAyLjg4MS0yLjg4MS0xLjg1MS0xLjg1MXoiIGZpbGw9IiNmZmYiLz48L2c+PC9nPjwvc3ZnPg==);
 }
@@ -274,7 +298,7 @@ a[target]::after {
 #menu-div ul li {
     display: inline-block;
     margin-right: 15px;
-    font-size: 13px;
+    font-size: 14px;
     height: 30px;
     line-height: 30px;
 }
@@ -287,4 +311,66 @@ a[target]::after {
     cursor: default !important;
     border-bottom: 3px solid #005e8e !important;
     color: #005e8e !important;
+}
+
+#problems {
+    font-style: italic;
+}
+
+#libinfo {
+    display: none;
+    padding: 20px;
+    border: 1px solid #eee;
+    background: #f1faff;
+    margin-bottom: 10px;
+}
+#libinfo .libinfo-header {
+    font-weight: bold;
+    font-size: 120%;
+    margin-bottom: 10px;
+}
+#libinfo .libinfo-header a {
+    text-transform: capitalize;
+}
+
+#few-hits-toggle {
+    background: #f1faff;
+}
+#few-hits {
+    display: none;
+    padding: 20px;
+    border: 1px solid #eee;
+    background: #f1faff;
+    margin-bottom: 10px;
+}
+.alt-search {
+    text-decoration: none;
+    padding: 4px;
+    background: white;
+    display: inline-block;
+    margin-top: 4px;
+    margin-right: 4px;
+}
+.alt-search:hover {
+    background: yellow;
+}
+
+/* ===================================================
+   GCS override */
+
+.gsc-results .gsc-cursor-box .gsc-cursor .gsc-cursor-page {
+    margin-right: 18px;
+    font-size: 18px;
+}
+
+.gs-title {
+    height: auto !important;
+}
+.gsc-results > .gsc-result, .gsc-expansionArea > .gsc-result {
+    xvisibility: hidden;
+    opacity: 0.1;
+}
+.gs-no-results-result {
+    visibility: visible !important;
+    opacity: 1; !important;
 }

@@ -1,3 +1,7 @@
+// fix-me: https://api.zotero.org/groups/56508/items/DA3XSXUD?format=atom&content=json
+// This is an attachment. Main object:
+// <link rel="up" type="application/atom+xml" href="https://api.zotero.org/groups/56508/items/GSKDRZHS?content=json"/>
+
 (function() {
 
     //// Call parameters
@@ -13,7 +17,10 @@
         }
     })(window.location.search);
     // params.f = "http://OurComments.org/psych/z"+params.zgi+".html";
-    params.f = "http://OurComments.org/psych/zfsp.html"; // fix-me
+    params["f"] = "http://OurComments.org/psych/zfsp.html"; // fix-me
+    // console.log("params", params);
+
+    var theUrl;
 
     var mkElt = ZReader.mkElt;
 
@@ -33,7 +40,7 @@
         }
         // console.log(searchStr);
         ths.setAttribute("href",
-                         params.f
+                         params["f"]
                          +"?q="
                          +encodeURIComponent(searchStr));
     }
@@ -71,41 +78,44 @@
         }
         if (!url) {
             url = "javascript:alert('Sorry, I do not know the link. It might be in the attachments below!'); void(0)";
+        } else {
+            theUrl = url;
         }
         var title = json["title"];
-        var twitterTitle = title;
+        // var twitterTitle = title;
         frag.appendChild(mkRow("Title",
-                               mkElt("h1", {"class":"h1-title"},
+                               mkElt("h1", {"class":"h1-title", "id":"ref-title"},
                                      mkElt("a",
                                            { "href":url,
-                                             "id":"ref-title",
+                                             // "id":"ref-title",
                                              "xtarget":"_blank",
-                                             "title":"Visit source"
+                                             "title":"Visit source",
+                                             "itemprop":"name"
                                            },
                                            title))));
-        // document.querySelector("title").firstChild.nodeValue = "Z: "+title;
         document.head.appendChild(mkElt("title", null, "Z: "+title));
-        var authors = "";
+
+        var authorsFrag = document.createDocumentFragment();
         var creators = json["creators"];
         var twitterFullTitle = "";
         if (creators) {
             for (var i=0; i<creators.length; i++) {
-                var fN = creators[i].firstName;
-                var lN = creators[i].lastName;
+                var fN = creators[i]["firstName"];
+                var lN = creators[i]["lastName"];
                 if (lN || fN) {
                     lN = lN.trim();
                     fN = fN.trim();
-                    // console.log(fN, lN);
                     if (lN.length > 0 || fN.length > 0) {
-                        if (authors.length>0) authors += ", ";
-                        authors += fN+" "+lN;
+                        // if (authors.length>0) authors += ", ";
+                        if (authorsFrag.length > 0) authorsFrag.appendChild(document.createTextNode(", "));
+                        // authors += fN+" "+lN;
+                        authorsFrag.appendChild(mkElt("span", {"itemprop":"author"},  fN+" "+lN));
                     }
                 }
-                if (0==i) twitterFullTitle = authors;
-                    
+                if (0===i) twitterFullTitle = fN+" "+lN; // authors;
             }
-            authors = authors.trim();
-            if (authors.length > 0) frag.appendChild(mkRow("Authors", authors));
+            // authors = authors.trim();
+            if (authorsFrag.childElementCount > 0) frag.appendChild(mkRow("Authors", authorsFrag));
         }
 
         var abstractNote = json["abstractNote"];
@@ -148,17 +158,21 @@
         if (!date || 0==date.length) date = json["accessDate"]+" (accessed)";
         // console.log("date",date);
         if (date) date = ", "+date;
+
         var itemType = getItemType(json["itemType"]);
+
         var genPublisher = json["publicationTitle"] || json["websiteTitle"] || json["publisher"];
         if (!genPublisher) {
             var url = json["url"];
             if (url) {
                 var m = new RegExp("https?://[^/]*").exec(url);
-                genPublisher = mkElt("a", {"href":m[0], "xtarget":"_blank"}, m[0]);
+                // genPublisher = mkElt("a", {"href":m[0], "xtarget":"_blank"}, m[0]);
+                genPublisher = mkElt("a", {"href":url, "xtarget":"_blank"}, m[0]);
             }
             if (!genPublisher) genPublisher = "Unknown source";
         }
         frag.appendChild(mkRow(itemType, [genPublisher,date]));
+
         var tags = json["tags"];
         if (tags.length>0) {
             var tagFrag = mkElt("div", {"id":"tag-container"}); //document.createDocumentFragment();
@@ -205,7 +219,7 @@
                 this.setAttribute("href",
                                   // Fix-me: How to choose search form??? Fix this in rewrite.
                                   // "http://ourcomments.org/psych/zfsp.html?q="
-                                  params.f
+                                  params["f"]
                                   +"?q="
                                   +encodeURIComponent(searchStr));
             });
@@ -217,7 +231,7 @@
             requestCitation();
         });
         // frag.appendChild(mkRow("How to Cite", btnCite));
-        var newBtnCite = mkElt("a", {"id":"copy-ref", "href":"#"}, "Copy reference");
+        var newBtnCite = mkElt("a", {"id":"copy-ref", "href":"#"}, "Copy reference etc");
         newBtnCite.addEventListener("click", function(ev) {
             ev.stopPropagation();
             ev.stopImmediatePropagation();
@@ -247,23 +261,33 @@
         "webpage":"Web Page"
     }
     function parseAndOutputChildren(jsons, nodeOutput) {
+        var myHref = window.location.href;
+        var m = new RegExp("[^?]*").exec(myHref);
+        var myFormatter = m[0];
+
         var imgLoader = function() {
             var emptyImg = document.getElementById("output-attachments").querySelectorAll("img");
             // console.log("emptyImg", emptyImg.length, emptyImg);
             var siteRe = new RegExp("https?://[^/]+/");
             for (var i=0, len=emptyImg.length; i<len; i++) {
+                var img = emptyImg[i];
                 // console.log(emptyImg[i], emptyImg[i].parentNode);
-                var href = emptyImg[i].parentNode.getAttribute("href");
+                var href = img.parentNode.getAttribute("href");
                 // console.log(href);
                 var m = siteRe.exec(href);
                 // console.log(m[0]);
                 var favIcon = m[0]+"favicon.ico"; // Just guess.... ;P
-                // .. then check
-                if (new RegExp("nih\.gov/").test(favIcon)) {
+                var text = img.parentNode.textContent;
+                if (new RegExp(/^Full ?text$/).test(text)) {
+                    favIcon = "https://dl.dropboxusercontent.com/u/848981/it/z/img/fulltext.svg";
+                } else if (new RegExp("nih\.gov/").test(favIcon)) {
                     favIcon = 'http://www.ncbi.nlm.nih.gov/favicon.ico';
                 } else if (new RegExp("dropboxusercontent").test(favIcon)) {
                     favIcon = 'http://www.zotero.org/favicon.ico';
-                } 
+                } else if (href.substr(0, myFormatter.length) === myFormatter) {
+                    // favIcon = 'http://www.zotero.org/favicon.ico';
+                    favIcon = "http://dl.dropboxusercontent.com/u/848981/it/z/favicon.ico";
+                }
                 emptyImg[i].setAttribute("src", favIcon);
             }
         }
@@ -277,9 +301,17 @@
             return mkElt("img",
                          {"width":"16", "height":"16"});
         }
+
+        var divParent = mkElt("div", { "class":"inner-container" });
         var divLinks = mkElt("div", { "class":"inner-container" });
         var divNotes = mkElt("div", { "class":"inner-container" });
         var divRelated = mkElt("div", { "class":"inner-container" });
+
+        function setTheUrl(url) {
+            theUrl = url;
+            var aRefTitle = document.querySelector("#ref-title a");
+            aRefTitle.setAttribute("href", url);
+        }
         for (var i=0; i<jsons.length; i++) {
             var json = jsons[i];
             // console.log(json);
@@ -289,6 +321,7 @@
             var itemType = json["itemType"];
             switch(itemType) {
             case "attachment":
+                // console.log("attachment", json);
                 var linkMode = json["linkMode"];
                 switch(linkMode) {
                 case "linked_url":
@@ -301,12 +334,21 @@
                     else if (new RegExp("annot", "i").test(title)) { colorClass = "color-annotation"; }
                     else if (new RegExp("diigo", "i").test(title)) { colorClass = "color-annotation"; }
                     // else if (new RegExp("pubmed", "i").test(title)) { colorClass = "color-pubmed"; }
-                    else if (new RegExp("nih\.gov", "i").test(url)) { colorClass = "color-pubmed"; }
+                    else if (new RegExp("nih\.gov", "i").test(url)) {
+                        colorClass = "color-pubmed";
+                        if (!theUrl) setTheUrl(url);
+                    }
+                    else if (new RegExp("books\.google\.", "i").test(url)) {
+                        colorClass = "color-book";
+                        if (!theUrl) setTheUrl(url);
+                        // var aRefTitle = document.querySelector("#ref-title a");
+                        // aRefTitle.setAttribute("href", url);
+                    }
                     
                     divLinks.appendChild(
                         mkElt("a", {"class":"attachment linked-url "+colorClass,
                                     "href":url,
-                                    "xtarget":"_blank",
+                                    "xtarget":"_blank"
                                    },
                               [mkFavPH(),
                                // Wrap title in span for vertical align-ment with icon:
@@ -346,25 +388,61 @@
                 console.log("unhandled child:", json);
             }
         }
+
         // console.log("relations 2", relations);
         // for (var k in relations) console.log(k, relations[k]);
-        if (Object.keys(relations).length > 0) {
+        if (typeof php_parent_zid !== "undefined") {
+            var parentOrigHref = "http://zotero.org/groups/"+php_parent_zgrp+"/items/"+php_parent_zid;
+            var key = php_parent_zid;
+            var grpId = php_parent_zgrp;
+            var formatHref = myFormatter
+                +"?zgi="+grpId
+                +"&zk="+key
+            // +"&f="+params.f
+            ;
+            var zURL = myURLBuilder.itemXML(key);
+            var title = key;
+            // wrap it to give the callback a variable:
+            (function() {
+                var spanTitle = mkElt("span", null, title);
+                var relLink = mkElt("a",{"href":formatHref,
+                                         "class":"related-item attachment color-related"},
+                                    [mkFavPH(), spanTitle]
+                                   );
+                divParent.appendChild(relLink);
+                var outputFun = function(zXml, dummyElt) {
+                    // console.log(zXml, dummyElt);
+                    var dp = new DOMParser();
+                    var zDom = dp.parseFromString(zXml, "text/html");
+                    var eltTitle = zDom.querySelector("title");
+                    var title = eltTitle.firstChild.nodeValue;
+                    spanTitle.replaceChild(document.createTextNode(title),
+                                           spanTitle.firstChild);
+                };
+                // console.log("zURL=", zURL);
+                ZReader.zReaderRequest(zURL, null, null, outputFun);
+            })();
+        }
+        if (relations && Object.keys(relations).length > 0) {
             // fix-me: move formatter finding code.
-            var myHref = window.location.href;
-            var m = new RegExp("[^?]*").exec(myHref);
-            var myFormatter = m[0];
             var relLink = [];
             // http://zotero.org/groups/56508/items/QEZ9XJQB
             var origHrefRe = new RegExp("^https?://zotero.org/groups/([0-9]+)/items/(.*)$");
-            console.log("-------------------relations", relations);
+            // console.log("-------------------relations", relations);
             var relatedContainer = mkElt("div", { "class":"related-container" });
+
+
+            // console.log("relations", relations);
             for (var prop in relations) {
                 // Looks strange, but prop seems to be "dc:relations"
                 // and we get the link directly? This link has group
                 // id numeric. Didn't I see yesterday that did not
                 // work???
-                var relatedOrigHrefs = relations[prop];
-                console.log("   +prop:"+prop+", href="+relatedOrigHrefs);
+                // var relatedOrigHrefs = relations[prop];
+                var relatedOrigHrefs = relations["dc:relation"];
+                // console.log("relatedOrigHrefs", relatedOrigHrefs);
+                // relatedOrigHrefs = relatedOrigHrefs || [];
+                // console.log("   +prop:"+prop+", href="+relatedOrigHrefs);
                 // for (var h in relatedOrigHrefs) { console.log("h="+h, relatedOrigHrefs[h]); }
                 // It is an array (is it always an array?). No, it is just a string sometimes!
                 // var hrefs = relatedOrigHrefs.split(",");
@@ -385,7 +463,7 @@
                     (function() {
                         var spanTitle = mkElt("span", null, title);
                         var relLink = mkElt("a",{"href":formatHref,
-                                                 "class":"related-item attachment"},
+                                                 "class":"related-item attachment color-related"},
                                             [mkFavPH(), spanTitle]
                                            );
                         divRelated.appendChild(relLink);
@@ -404,14 +482,22 @@
 
                 }
             }
-            console.log("<<<<<<<<<<< end relations");
+            // console.log("<<<<<<<<<<< end relations");
         }
-        if (divLinks.children.length
+        if (divParent.children.length
+            +divLinks.children.length
             +divNotes.children.length
             +divRelated.children.length
             > 0)
         {
             var outerContainer;
+            if (divParent.children.length > 0) {
+                outerContainer = mkElt("div", {"class":"outer-container", "id":"links-container"});
+                outerContainer.appendChild(mkElt("div", {"class":"etc-label-div"},
+                                                 mkElt("span", {"class":"etc-label"}, "Owner parent")));
+                outerContainer.appendChild(divParent);
+                nodeOutput.appendChild(outerContainer);
+            }
             if (divLinks.children.length > 0) {
                 outerContainer = mkElt("div", {"class":"outer-container", "id":"links-container"});
                 outerContainer.appendChild(mkElt("div", {"class":"etc-label-div"},
@@ -433,7 +519,8 @@
                                     "Due to a bug in Zotero relations are not"
                                     +" displayed both ways."
                                     +" So the relation you see here may not be"
-                                    +" seen on related documents below.")
+                                    +" seen on related documents below."
+                                    +" (Hm, it might be gone now. No, it is not!)")
                 summaryElt.addEventListener("click", function() {
                     if (descElt.style.display == "none")
                         descElt.style.display = "inline-block";
@@ -510,8 +597,9 @@
         // console.log(idElt);
         // var altElt = zDom.querySelector("link[rel=alternate]");
         var altElt = zDom.querySelector("entry link[rel=alternate]"); // check?
-        console.log("altElt", altElt);
+        // console.log("altElt", altElt);
         // fix-me: Sometimes we get a hit here, sometimes not. The xml
+        // http://ourcomments.org/cgi-bin/zformat.php?zgi=56508&zk=NTFREEPH does not work.
         if (!altElt) {
             var zURL = myURLBuilder.idURL();
             ZReader.zReaderRequest(zURL, null, null, getLibFromXml);
@@ -519,61 +607,90 @@
             // console.log(zXml);
             // format from Zotero is not well defined yet!
             var href = altElt.getAttribute("href");
-            console.log("href", href);
-            m = new RegExp("^https?://zotero.org/groups/([^/]*)").exec(href);
+            // console.log("href", href);
+            // xtemp = href;
+            // m = new RegExp("^https?://zotero.org/groups/([^/]*)").exec(href);
+            m = new RegExp("^https?://.*?zotero\.org/groups/([^/]*)").exec(href);
+            console.log("m", m);
             grpTextId = m[1];
-            // console.log("grpTextId", grpTextId);
+            var zLibURL = "http://zotero.org/groups/"+grpTextId;
+            console.log("grpTextId", grpTextId);
+            // Was it the group number id?
+            if (new RegExp(/^\d+$/).exec(grpTextId)) {
+                var titleTag = zDom.querySelector("title");
+                grpTextId = titleTag.textContent;
+            }
             // Update group
             var libName = grpTextId.split("_").join(" ");
-            var zotHref = "http://zotero.org/groups/"+grpTextId;
-            libTitElt.appendChild(mkElt("a",
-                                        {"href":zotHref,
-                                         "title":"Visit this Zotero library"},
-                                        libName));
+            console.log("libName", libName);
+            var zotHref = zLibURL;
+            // libTitElt.appendChild(mkElt("a",
+            //                             {"href":zotHref,
+            //                              "title":"Visit this Zotero library"},
+            //                             libName));
+            libTitElt.appendChild(document.createTextNode(libName));
             var zotLink = document.getElementById("zotlink");
             zotHref += "/items/itemKey/"+itemKey;
             zotLink.setAttribute("href", zotHref);
             zotLink.style.opacity = 1.0;
             // var copyRef = document.getElementById("copy-ref-old");
             // copyRef.addEventListener("click", function() { doCopyRef(grpId, itemKey); });
+            var zotInfoTag = document.getElementById("libinfolink");
+            // function capitalizeEachWord(str) {
+            //     return str.replace(/\w\S*/g, function(txt) {
+            //         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            //     });
+            // }
+            // libName = capitalizeEachWord(libName);
+            zotInfoTag.addEventListener("click", function(ev){
+                ev.preventDefault();
+                ev.stopPropagation();
+                console.log("clicked");
+                var libinfoDiv = document.querySelector("#libinfo");
+                if (libinfoDiv.style.display === "block") {
+                    libinfoDiv.style.display = "none";
+                } else if (libinfoDiv.style.display === "none") {
+                        libinfoDiv.style.display = "block";
+                } else {
+                    ZReader.showLibInfo(zLibURL, libName, libinfoDiv);
+                }
+            });
         }
     }
     function doCopyRef(grpId, itemKey) {
-        var jsId = "ourcomments-edit-js";
-        var editJsElt = document.getElementById(jsId);
-        var showForm = function() { ZreaderWP.showForm(grpId, itemKey); };
-        if (!editJsElt) {
-            var urlHtml = window.location.href;
-            console.log("urlHtml", urlHtml);
+        var showForm = function() { ZReaderRefCopier.showForm(grpId, itemKey); };
+        if (typeof ZReaderRefCopier === "undefined") {
             var baseHref;
-            var baseElt = document.querySelector("base");
-            if (baseElt) {
-                // .php case
-                baseHref = baseElt.href;
+            if (new RegExp(/\.php\?/).exec(location.href)) {
+                //// .php case
+
+                // fix-me: Probably can't use baseElt because of ref
+                // copy, but save it just in case.
+                var baseElt = document.querySelector("base");
+                if (baseElt) {
+                    baseHref = baseElt.href;
+                } else {
+                    // fix-me: give it an id attribute?
+                    (function() {
+                        // var firstSrcipt = document.querySelector("script[src]");
+                        var firstSrcipt = document.querySelector("#zformat-js");
+                        // var pathPattern = new RegExp(/(.*?)[^\/]*$/);
+                        var pathPattern = new RegExp(/(.*?\/)js\/[^\/]*$/);
+                        var matches = pathPattern.exec(firstSrcipt.src);
+                        baseHref = matches[1];
+                    })();
+                }
             } else {
-                // .html case
                 baseHref = location.protocol+"//"+location.host+location.pathname;
                 baseHref = baseHref.replace(new RegExp("/zformat\.html.*$"), "/");
             }
-            // var hrefCss = urlHtml.replace(new RegExp("/zformat\.html.*$"), "/css/edit.css");
-            var hrefCss = baseHref+"css/edit.css";
-            var editCssElt = mkElt("link",
-                                           {"rel":"stylesheet",
-                                            "type":"text/css",
-                                            "href":hrefCss,
-                                            "media":"screen"});
-            document.head.appendChild(editCssElt);
-            editJsElt = mkElt("script", {"id":jsId});
+
+
+            var jsId = "ourcomments-edit-js";
+            var editJsElt = mkElt("script", {"id":jsId});
             document.head.appendChild(editJsElt);
             editJsElt.onload = function() { showForm(); };
-            var urlHtml = window.location.href;
-            console.log("urlHtml", urlHtml);
-            var urlJs = urlHtml;
-            // x = urlJs;
-            // urlJs = urlJs.replace(new RegExp("/zformat\.html.*$"), "/js/edit.js");
-            urlJs = baseHref+"js/edit.js";
-            console.log("urlJs", urlJs);
-            // var urlJs = "http://OurComments.org/psyblog/wp-content/plugins/zreader/js/edit.js";
+            var urlJs = baseHref+"js/edit.js";
             editJsElt.src = urlJs;
         } else {
             showForm();
@@ -583,9 +700,13 @@
     
     function requestChildren() {
         console.log("requestChildren ----------------------------");
-        var zURL = myURLBuilder.children(itemKey);
         var nodeOutput = document.getElementById("output-attachments");
-        ZReader.zReaderRequest(zURL, nodeOutput, parseAndOutputChildren, getLibFromXml);
+        if (typeof php_parent_zid === "undefined") {
+            var zURL = myURLBuilder.children(itemKey);
+            ZReader.zReaderRequest(zURL, nodeOutput, parseAndOutputChildren, getLibFromXml);
+        } else {
+            parseAndOutputChildren([], nodeOutput);
+        }
     }
     function requestCitation() {
         var zURL = myURLBuilder.citation(itemKey);
@@ -595,47 +716,62 @@
         ZReader.zReaderRequest(zURL, divCite2, null, parseAndOutputCitation);
     }
     var myURLBuilder;
-    var grpId     = params.zgi;
-    var itemKey   = params.zk;
-    var grpTextId = params.zit;
-    var z = params.z;
-    window.addEventListener("load", function() {
-        var nodeOutput = document.getElementById("output");
-        if (z) {
-            var match = new RegExp("https?://www\.zotero\.org/groups/(.*?)/items/itemKey/([^/]*)").exec(z);
-            grpTextId = grpTextId || match[1];
-            itemKey = itemKey || match[2];
-            console.log(grpTextId, itemKey, grpId);
+    var grpId     = params["zgi"];
+    var itemKey   = params["zk"];
+    var grpTextId = params["zit"];
+    var z = params["z"];
+    (function(){
+        function initOnLoad() {
+            var nodeOutput = document.getElementById("output");
+            if (z) {
+                var match = new RegExp("https?://www\.zotero\.org/groups/(.*?)/items/itemKey/([^/]*)").exec(z);
+                grpTextId = grpTextId || match[1];
+                itemKey = itemKey || match[2];
+                // console.log(grpTextId, itemKey, grpId);
+            }
+            // grpId = grpId || groupIds[grpTextId];
+            // console.log(grpId, groupIds);
+            myURLBuilder = new ZURLBuilder(true, grpId);
+            // grpTextId = grpTextId || getGrpTextIdFromId(grpId);
+            // var libName = grpTextId.split("_").join(" ");
+            // document.getElementById("lib-title")
+            //     .appendChild(document.createTextNode(libName));
+            document.getElementById("output").style.display = "block";
+            document.getElementById("glass2").addEventListener("mousedown", function(){
+                mkSearchMarked(this);
+            });
+            document.getElementById("glass2").addEventListener("touchstart", function(ev){
+                ev.target.mousedown();
+            });
+            document.body.addEventListener("mouseup", function(){
+                var glass = document.getElementById("glass-cont");
+                if (window.getSelection().toString().length > 0)
+                    glass.style.opacity = 1;
+                else
+                    glass.style.opacity = null;
+            });
+            
+            
+            if (typeof php_json !== "undefined") {
+                // console.log("php_json", php_json);
+                var outputElt = document.getElementById("output");
+                parseAndOutputMain([php_json], outputElt);
+            } else {
+                requestMain();
+            }
         }
-        // grpId = grpId || groupIds[grpTextId];
-        // console.log(grpId, groupIds);
-        myURLBuilder = new ZURLBuilder(true, grpId);
-        // grpTextId = grpTextId || getGrpTextIdFromId(grpId);
-        // var libName = grpTextId.split("_").join(" ");
-        // document.getElementById("lib-title")
-        //     .appendChild(document.createTextNode(libName));
-        document.getElementById("output").style.display = "block";
-        document.getElementById("glass2").addEventListener("mousedown", function(){
-            mkSearchMarked(this);
-        });
-        document.getElementById("glass2").addEventListener("touchstart", function(ev){
-            ev.target.mousedown();
-        });
-        document.body.addEventListener("mouseup", function(){
-            var glass = document.getElementById("glass-cont");
-            if (window.getSelection().toString().length > 0)
-                glass.style.opacity = 1;
-            else
-                glass.style.opacity = null;
-        });
-
-
-        if (typeof php_json !== "undefined") {
-            // console.log("php_json", php_json);
-            var outputElt = document.getElementById("output");
-            parseAndOutputMain([php_json], outputElt);
-        } else {
-            requestMain();
-        }
-    });
+        switch (document.readyState) {
+        case "loading":
+            document.addEventListener("DOMContentLoaded", function() {
+                initOnLoad();
+            });
+            break;
+        case "interactive":
+        case "complete":
+            initOnLoad();
+        break;
+    default:
+        debugger;
+    }
+    })();
 })();
