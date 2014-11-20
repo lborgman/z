@@ -292,7 +292,7 @@ window.addEventListener("load", function() {
                mkElt("a",{"href":
                           (function(){
                               var l = window.location;
-                              return l.protocol+l.host+l.pathname
+                              return l.protocol+"//"+l.host+l.pathname
                                   +"?q=adhd+mta";
                           })(),
                                    "target":"_blank"},

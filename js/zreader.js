@@ -334,6 +334,7 @@ ZReader.mkElt = function(type, attrib, inner) {
 ZReader.requestLibInfo = function(zLibURL, onloadFun) {
     var xhr = new XMLHttpRequest();
     var url = "http://ourcomments.org/cgi-bin/zlibdesc.php?zlib="+zLibURL;
+    // var url = zLibURL;
     // console.log("requestLibInfo url", url);
     xhr.open("get", url, true);
     xhr.onerror = function(xhrProgEv) { logIt(rq.statusText); logIt(xhrProgEv); };
@@ -348,24 +349,52 @@ ZReader.showLibInfo = function(zLibURL, libName, where) {
     here.style.display = "block";
     ZReader.requestLibInfo(zLibURL, function(xhr){
         while(here.firstChild) here.removeChild(here.firstChild);
-        var header = ZReader.mkElt("div", {"class":"libinfo-header", "title":"Visit Zotero"},
-                           ["Zotero library ",
-                            ZReader.mkElt("a", {"href":zLibURL}, libName)]);
         if(xhr.status >= 200 && xhr.status < 400) {
             var zXml = xhr.responseText;
             // console.log(zXml);
             var body = ZReader.mkElt("div");
+            // Avoid requesting any images etc when parsing
+            zXml = zXml.replace(/ src="[^h]/g, " xsrc=\"");
+            // myZ = zXml;
+            // console.log("before innerHTML");
             body.innerHTML = zXml;
+            // console.log("after innerHTML");
+            // console.log("body", body);
+
+            var descPart = body.querySelector("div.minor-col.last-col");
+            // myTemp = descPart;
+
+            // Remove uninteresting info
+            var ul = descPart.querySelector("ul.group-information");
+            var nxt; while (nxt = ul.nextSibling) { nxt.parentNode.removeChild(nxt); }
+            ul.parentNode.removeChild(ul);
+            
             // Check for relative links:
-            var links = body.querySelectorAll("a");
+            var links = descPart.querySelectorAll("a");
             for (var i=0, lnk; lnk=links[i++]; ) {
                 var href = lnk.getAttribute("href");
                 if (href.substr(0,1) === "/") {
                     lnk.setAttribute("href", "https://www.zotero.org"+href);
                 }
             }
+            if (!libName) {
+                libName = "(fix-me)";
+                // var h1 = body.querySelector("h1");
+                var h1 = body.querySelector("[id='group-show'] h1")
+                if (h1) {
+                    libName = h1.innerText;
+                    h1.parentNode.removeChild(h1);
+                }
+            }
+            var header = ZReader.mkElt("div", {"class":"libinfo-header", "title":"Visit Zotero"},
+                                       ["Zotero library ",
+                                        ZReader.mkElt("a", {"href":zLibURL}, libName)]);
+            // console.log("before appendChild");
             here.appendChild(header);
-            here.appendChild(body);
+            here.appendChild(descPart);
+            // console.log(header);
+            // console.log(descPart);
+            // console.log("after appendChild");
         } else {
             here.innerHTML = "Could not get info. Please right click on link.";
             console.log("Couldn't read the requested file, status = " + xhr.status.toString());

@@ -35,6 +35,11 @@ $zurl = "https://api.zotero.org/groups/"
         . "?format=atom&content=json";
 // echo $zurl; exit;
 
+$userUrl = "https://zotero.org/groups/"
+        . $zgi
+        . "/items/"
+        . $zk;
+
 $r = new \HTTP_Request2($zurl, \HTTP_Request2::METHOD_GET);
 // $r = new HTTP_Request2($zurl, HTTP_Request2::METHOD_GET);
 
@@ -251,10 +256,14 @@ try {
 
                 //////// Zotero API returned item types and fields as comments, with English pretty names.
                 // https://api.zotero.org/itemTypes
+                //
+                // Map these to microdata itemtype and a visible label name.
 
-                $itemtype = null; // http://schema.org/$itemtype
-                $zf2itemprop = array(); // zotero field => schema.org itemprop
-                $zf2itemName = array(); // zotero field => visible name
+                $microdataItemtype = null; // http://schema.org/$microdataItemtype
+                $visibleItemtypeLabel = null;
+
+                // $zf2itemprop = array(); // zotero field => schema.org itemprop
+                // $zf2itemName = array(); // zotero field => visible name
                 // $zf2itemprop["abstractNote"] = "description"; $zf2itemName["abstractNote"] = "Description");
                 // echo $zfield2itemprop["abstractNote"][0]; exit;
                 // switch ($json->itemType) {
@@ -267,7 +276,7 @@ try {
 
                 case "book":
                         //// Zotero - "itemType": "book", "localized": "Book"
-                        $itemtype = "Book"; $typeName = "Book";
+                        $microdataItemtype = "Book";   $visibleItemtypeLabel = "Book";
                         // https://api.zotero.org/itemTypeFields?itemType=book
                         // Zotero - "field": "ISBN", "localized": "ISBN"
                         // Zotero - "field": "abstractNote", "localized": "Abstract"
@@ -310,7 +319,7 @@ try {
 
                 case "journalArticle":
                         //// Zotero - "itemType": "journalArticle", "localized": "Journal Article"
-                        $itemtype = "ScholarlyArticle"; $typeName = "Journal Article";
+                        $microdataItemtype = "ScholarlyArticle";   $visibleItemtypeLabel = "Journal Article";
                         // https://api.zotero.org/itemTypeFields?itemType=journalArticle
                         // Zotero - "field": "title", "localized": "Title"
                         // Zotero - "field": "abstractNote", "localized": "Abstract"
@@ -343,7 +352,7 @@ try {
 
                 case "newspaperArticle":
                         //// Zotero - "itemType": "newspaperArticle", "localized": "Newspaper Article"
-                        $itemtype = "NewsArticle"; $typeName = "Newspaper Article";
+                        $microdataItemtype = "NewsArticle";   $visibleItemtypeLabel = "Newspaper Article";
                         break;
 
                         //// Zotero - "itemType": "note", "localized": "Note"
@@ -358,20 +367,20 @@ try {
 
                 case "videoRecording":
                         //// Zotero - "itemType": "videoRecording", "localized": "Video Recording"
-                        $itemtype = "VideoObject"; $typeName = "Video";
+                        $microdataItemtype = "VideoObject";   $visibleItemtypeLabel = "Video";
                         break;
 
                 case "webpage":
                         //// Zotero - "itemType": "webpage", "localized": "Web Page"
-                        $itemtype = "WebPage"; $typeName = "Web Page";
+                        $microdataItemtype = "WebPage";   $visibleItemtypeLabel = "Web Page";
                         break;
 
                 default:
-                        $itemtype = "CreativeWork"; $typeName = "Unhandled Zotero type";
+                        $microdataItemtype = "CreativeWork";   $visibleItemtypeLabel = "Unhandled Zotero type";
                 }
                 // echo $json->itemType; echo "\n";
-                // echo $typeName; echo "\n";
-                // echo $itemtype; echo "\n";
+                // echo $visibleItemtypeLabel; echo "\n";
+                // echo $microdataItemtype; echo "\n";
                 // exit;
 
 
@@ -400,7 +409,7 @@ try {
                                         $token = strtok("\n");
                                 }
                                 // var_dump($abstrInner); exit;
-                                $classes = "sixteen columns";
+                                $classes = "sixteen xcolumns";
                                 // echo strlen($abstractNote); exit;
                                 if (strlen($abstractNote) > 500) { // 3-4 rows
                                         $classes .=" newspaper-cols";
@@ -444,6 +453,7 @@ try {
                 $date = mkElt("span", array("itemprop"=>"datePublished", "style"=>"display:inline-block"), $date);
                 $date .= $accessDateNotice;
                 // echo "Date:".$date; exit;
+                $fragAuthors .= mkRow("Date", $date); // fix-me
 
                 if (array_key_exists("publicationTitle", $json)) {
                         $genPublisher =
@@ -480,7 +490,8 @@ try {
                 }
                 // echo $genPublisher; exit;
                 if (isset($genPublisher)) {
-                        $fragDetails .= mkRow($typeName, array($genPublisher, ", ", $date));
+                        // $fragDetails .= mkRow($visibleItemtypeLabel, array($genPublisher, ", ", $date));
+                        $fragDetails .= mkRow($visibleItemtypeLabel, array($genPublisher));
                 }
                 // echo $frag; exit;
 
@@ -686,7 +697,9 @@ try {
     <meta property="og:type" content="article" />
 
     <script>
-      php_json = <?php echo $content; ?>;
+      php_zgi = <?php echo $zgi; ?>
+      php_zk = <?php echo $zk; ?>
+      // php_json = <?php echo $content; ?>;
       <?php if (isset($parent_zgrp) && $parent_zgrp) { ?>
         php_parent_zgrp = "<?php echo $parent_zgrp; ?>";
         php_parent_zid  = "<?php echo $parent_zid; ?>";
@@ -702,46 +715,55 @@ try {
 
     <!-- Favicons
          ================================================== -->
-    <link rel="icon" sizes="16x16 32x32 64x64" href="http://dl.dropboxusercontent.com/u/848981/it/z/favicon.ico" />
+    <link rel="icon" sizes="16x16 32x32 64x64" href="http://dl.dropboxusercontent.com/u/848981/it/z/favicon.ico">
 
     <!-- <link rel="stylesheet" href="css/zformat.css" /> -->
     <!-- <script type="text/javascript" src="js/zformat-cld.js"></script> -->
 
     <link rel="stylesheet" href="http://dl.dropboxusercontent.com/u/848981/it/z/css/zformat2.css" />
-    <!-- <script id="zformat-js" src="http://dl.dropboxusercontent.com/u/848981/it/z/js/zformat-cld.js"></script> -->
+    <script id="zformat-js" src="http://dl.dropboxusercontent.com/u/848981/it/z/js/zformat2-cld.js"></script>
 
     <!-- Twitter cards
          ================================================== -->
     <meta name="twitter:card" content="summary" >
-    <meta name="twitter:title" content="<?php echo $title; ?>" >
-    <meta name="twitter:description" content="my long desc" >
+    <meta name="twitter:title" content="<?php echo $twitterFullTitle; ?>" >
+    <meta name="twitter:description" content="<?php echo $twitterDescription; ?>" >
     <meta name="twitter:image:src" content="http://zotero.org/favicon.ico" >
 
   </head>
   <body>
 
 
-    <div class="container">
-      <div id="lib-container">
-        A
-        <a href="<?php echo $zotlink; ?>"
-           title="Show in Zotero"
-           id="zotlink">reference</a>
-        from
-          <span style="font-size:18px"><span style="color: #BE0D0D">z</span>otero</span>
-      library
-        <div id="upper-right-links">
-          <a href="javascript:alert('Something went wrong (or not ready yet)');"
-             id="libinfolink"
-             title="Show Zotero library info"
-             style="text-decoration:none; xopacity:0.2">
-            <div id="lib-title"><?php echo $zgrp ?></div>
-          </a>
+    <div id="libinfo"></div>
+
+    <div id="main" class="container">
+      <div>
+        <div id="header-div">
+          <div id="glass-outer">
+            <div id="glass-cont">
+              <div id="glass" class="circle"></div>
+              <div id="glass-search">Search!</div>
+              <a id="glass2" class="circle" href="#"></a>
+              <div id="glass-rod1" class="glass-rod"></div>
+            </div>
+          </div>
+          <div id="upper-right-links">
+            <a id="libinfolink"
+               href="<?php echo $userUrl; ?>"
+               title="Show Zotero library info. Or, right click to go there.">
+              From
+                <span class="zotero-name" id="zotero1"><span>z</span>otero</span>
+              <img src="http://dl.dropboxusercontent.com/u/848981/it/z/img/info.svg">
+            </a>
+            <br>
+            <span id="cite" tabstop="0" title="Copy reference etc">
+              <img src="https://dl.dropboxusercontent.com/u/848981/it/z/img/double-quote-serif-left.svg">
+              &nbsp;Cite&nbsp;
+              <img src="https://dl.dropboxusercontent.com/u/848981/it/z/img/double-quote-serif-right.svg">
+            </span>
+          </div>
         </div>
-        </div>
-      <div id="libinfo"></div>
-      <div class="sixteen columns">
-        <div id="output" itemscope itemtype="http://schema.org/<?php echo $itemtype; ?>" style="display:block">
+        <div id="output" itemscope itemtype="http://schema.org/<?php echo $microdataItemtype; ?>" style="display:block">
           <?php echo $fragTitle; ?>
           <div id="output-authors"><?php echo $fragAuthors; ?></div>
           <?php echo $frag; ?>
@@ -749,14 +771,7 @@ try {
         </div>
         <div id="output-attachments"></div>
       </div>
-      <div id="glass-cont">
-        <div id="glass" class="circle"></div>
-        <div id="glass-search">Search!</div>
-        <a id="glass2" class="circle" href="#"></a>
-        <div id="glass-rod1" class="glass-rod"></div>
-      </div>
     </div>
 
-
-
-  </body>
+  
+</body></html>

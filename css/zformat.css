@@ -772,7 +772,6 @@ label.tag.checked-tag {
 }
 .glass-rod {
     transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
 }
 #glass-rod1 {
     width: 10px;
@@ -795,7 +794,6 @@ label.tag.checked-tag {
     top: -20px;
     display: block;
     transform: scale(0.6);
-    -webkit-transform: scale(0.6);
     z-index: 4;
     xcursor: pointer;
 }
