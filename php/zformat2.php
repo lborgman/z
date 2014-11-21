@@ -827,7 +827,8 @@ try {
                                                 array("type"=>"checkbox", "style"=>"display:none"),
                                                 null);
                                 $tagFrag .= mkElt("label",
-                                                  array("class"=>"tag"),
+                                                  array("itemprop"=>"keywords",
+                                                        "class"=>"tag"),
                                                   array($tagTag, $chkBox));
                                 // echo $tagFrag; exit;
                         }
