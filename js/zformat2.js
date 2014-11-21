@@ -24,7 +24,7 @@
 
     var mkElt = ZReader.mkElt;
 
-    function mkSearchMarked(ths) {
+    function mkGlassSearchStr() {
         var searchStr = "";
         var selObj = window.getSelection();
         var selText = selObj.toString();
@@ -38,20 +38,21 @@
                 searchStr += '"'+selected[i].firstChild.nodeValue+'"';
             }
         }
-        // console.log(searchStr);
-        ths.setAttribute("href",
-                         params["f"]
-                         +"?q="
-                         +encodeURIComponent(searchStr));
+        return searchStr;
     }
-    // var groupIds = {
-    //     "from_some_psychologists":56508,
-    //     "minding_my_mitochondria_terry_wahls":136570
-    // };
-    // function getGrpTextIdFromId(id) {
-    //     for (var key in groupIds)
-    //         if (id == groupIds[key]) return key;
-    // }
+    function setGlassSearchStr() {
+        var str = mkGlassSearchStr();
+        var glass2 = document.getElementById("glass2");
+        var glassCont = document.getElementById("glass-cont");
+        var href = "javascript:alert('Select text or tags to search')";
+        if (str && str.length > 0) {
+            href = params["f"] +"?q=" +encodeURIComponent(str);
+            glassCont.classList.add("glass-searchable");
+        } else {
+            glassCont.classList.remove("glass-searchable");
+        }
+        glass2.setAttribute("href", href);
+    }
 
     function mkDt(title) {
         return mkElt("span", { "class":"dt" }, title);
@@ -201,10 +202,12 @@
                     var searchGlass = document.getElementById("glass-cont");
                     if (selected.length > 0) {
                         // searchElt.style.display = "block";
-                        searchGlass.style.opacity = 1;
+                        // searchGlass.style.opacity = 1;
+                        searchGlass.classList.add("glass-searchable");
                     } else {
                         // searchElt.style.display = "none";
-                        searchGlass.style.opacity = null;
+                        // searchGlass.style.opacity = null;
+                        searchGlass.classList.remove("glass-searchable");
                     }    
                 });
                 eltTag[i] = mkElt("label", {"class":"tag"}, [tag.tag, chkBox[i]]);
@@ -747,30 +750,17 @@
             // document.getElementById("lib-title")
             //     .appendChild(document.createTextNode(libName));
             document.getElementById("output").style.display = "block";
-            document.getElementById("glass2").addEventListener("mousedown", function(){
-                mkSearchMarked(this);
-            });
+            // document.getElementById("glass2").addEventListener("mousedown", function(){
+            //     // mkSearchMarked(this);
+            // });
             document.getElementById("glass2").addEventListener("touchstart", function(ev){
                 ev.target.mousedown();
             });
             document.body.addEventListener("mouseup", function(){
-                var glass = document.getElementById("glass-cont");
-                if (window.getSelection().toString().length > 0)
-                    glass.style.opacity = 1;
-                else
-                    glass.style.opacity = null;
+                setGlassSearchStr();
             });
             
             
-            // if (typeof php_json !== "undefined") {
-            //     // console.log("php_json", php_json);
-            //     var outputElt = document.getElementById("output");
-            //     parseAndOutputMain([php_json], outputElt);
-            // } else {
-            //     requestMain();
-            // }
-
-            // var newBtnCite = mkElt("a", {"id":"copy-ref", "href":"#"}, "Copy reference etc");
             var newBtnCite = document.getElementById("cite");
             newBtnCite.addEventListener("click", function(ev) {
                 ev.stopPropagation();
@@ -779,10 +769,21 @@
                 doCopyRef(grpId, itemKey);
             });
 
-            // var btnCite = document.getElementById("cite-div");
-            // btnCite.addEventListener("click", function(){
-            //     requestCitation();
-            // });
+            var od = document.getElementById("output-details");
+            var tagsElt = od.querySelectorAll(".tag [type=checkbox]");
+            for (var i=0, elt; elt=tagsElt[i++];) {
+                elt.addEventListener("click", function(ev){
+                    ev.stopPropagation();
+                    if (!this.checked) {
+                        this.style.display = "none";
+                        this.parentNode.classList.remove("checked-tag");
+                    } else {
+                        this.parentNode.classList.add("checked-tag");
+                        this.style.display = "inline-block";
+                    }
+                    setGlassSearchStr();
+                });
+            }
 
             requestChildren();
         }

@@ -112,8 +112,12 @@ function mkDt($title) {
 function mkDd($desc) {
         return mkElt("span", array( "class" => "dd" ), $desc);
 }
-function mkRow($dt, $dd) {
-        return mkElt("span", array( "class" => "drow" ), array(mkDt($dt),mkDd($dd)));
+function mkRow($dt, $dd, $id, $class) {
+        $classes = "drow";
+        if ($class) { $classes .= " ".$class; }
+        $attr = array( "class" => $classes );
+        if ($id) { $attr["id"] = $id; }
+        return mkElt("span", $attr, array(mkDt($dt),mkDd($dd)));
 }
 
 function mkDetail($zfield, $label) {
@@ -121,7 +125,7 @@ function mkDetail($zfield, $label) {
         if (array_key_exists($zfield, $json)) {
                 $val = $json[$zfield];
                 if ($val === "") return "";
-                return mkRow($label, $json[$zfield]);
+                return mkRow($label, $json[$zfield], null, null);
         } else {
                 return "";
         }
@@ -131,7 +135,7 @@ function mkDetailGoogleDefine($zfield, $label) {
         if (array_key_exists($zfield, $json)) {
                 $val = $json[$zfield];
                 if ($val === "") return "";
-                return mkRow($label, mkGoogleDefine($json[$zfield]));
+                return mkRow($label, mkGoogleDefine($json[$zfield]), null, null);
         } else {
                 return "";
         }
@@ -321,7 +325,7 @@ try {
                         }
                 }
                 foreach($creatorFrags as $a => $a_val) {
-                        $fragAuthors .= mkRow($a, $a_val);
+                        $fragAuthors .= mkRow($a, $a_val, null, null);
                 }
                 // echo $frag; exit;
         }
@@ -595,7 +599,7 @@ try {
         $date = mkElt("span", array("itemprop"=>"datePublished", "style"=>"display:inline-block"), $date);
         $date .= $accessDateNotice;
         // echo "Date:".$date; exit;
-        if ($date) { $fragAuthors .= mkRow("Date", $date); }
+        if ($date) { $fragAuthors .= mkRow("Date", $date, null, null); }
 
         if (array_key_exists("publicationTitle", $json)) {
                 $genPublisher =
@@ -633,7 +637,7 @@ try {
         // echo $genPublisher; exit;
         if (isset($genPublisher)) {
                 // $fragDetails .= mkRow($visibleItemtypeLabel, array($genPublisher, ", ", $date));
-                $fragDetails .= mkRow($visibleItemtypeLabel, array($genPublisher));
+                $fragDetails .= mkRow($visibleItemtypeLabel, array($genPublisher), null, null);
         }
         // echo $frag; exit;
 
@@ -695,7 +699,7 @@ try {
                 $fragDetails .= mkRow("DOI",
                                       mkElt("a",
                                             array("href"=>"http://dx.doi.org/"+$json["DOI"]),
-                                            $json["DOI"]));
+                                            $json["DOI"]), null, null);
         }
         // Zotero - "field": "date", "localized": "Date"
         // Zotero - "field": "dateDecided", "localized": "Date Decided"
@@ -727,7 +731,7 @@ try {
                                             array("href"=>
                                                   "https://www.google.com/search?tbm=bks&q=isbn:"
                                                   . $isbn),
-                                            $isbn));
+                                            $isbn), null, null);
                         $fragDetails .= $isbnDetail;
                 }
         }
@@ -834,7 +838,7 @@ try {
                         }
                 }
                 // exit;
-                if ($tagFrag !== "") { $fragDetails .= mkRow("Tags", $tagFrag); }
+                if ($tagFrag !== "") { $fragDetails .= mkRow("Tags", $tagFrag, "tag-container", null); }
         }
 
         // }
@@ -872,9 +876,9 @@ try {
     <meta property="og:type" content="article" />
 
     <script>
-      php_zgi = <?php echo $zgi; ?>
-      php_zk = <?php echo $zk; ?>
-      // php_json = <?php echo $content; ?>;
+      php_zgi = "<?php echo $zgi; ?>";
+      php_zk = "<?php echo $zk; ?>";
+      // php_json = <php echo $content; >;
       <?php if (isset($parent_zgrp) && $parent_zgrp) { ?>
         php_parent_zgrp = "<?php echo $parent_zgrp; ?>";
         php_parent_zid  = "<?php echo $parent_zid; ?>";

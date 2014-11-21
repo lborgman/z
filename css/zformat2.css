@@ -652,6 +652,7 @@ label.tag.checked-tag {
     width: 100px;
     height: 100px; 
     display: block;
+    cursor: default;
 }
 .glass-rod {
     transform: rotate(-45deg);
@@ -678,7 +679,6 @@ label.tag.checked-tag {
     display: block;
     transform: scale(0.6) rotate(-27deg);
     z-index: 4;
-    xcursor: pointer;
     margin-top: -15px;
     margin-bottom: -5px;
 }
@@ -701,6 +701,10 @@ label.tag.checked-tag {
     display: flex;
     flex: 1 0 auto;
     justify-content: center;
+}
+.glass-searchable, .glass-searchable * {
+    cursor: pointer !important;
+    opacity: 1.0 !important;
 }
 @media screen and (max-width: 500px) {
     #glass-outer {
