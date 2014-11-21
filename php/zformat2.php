@@ -331,129 +331,174 @@ try {
         $fragDetails = ""; // Details go here!
 
 
+
+
         //////// Zotero API returned item types with English pretty names.
         // https://api.zotero.org/itemTypes
+        // https://api.zotero.org/itemTypeFields?itemType=book
         //
         // Map these to microdata itemtype and a visible label name.
 
-        $microdataItemtype = null; // http://schema.org/$microdataItemtype
-        $visibleItemtypeLabel = null;
+        // Default microdata itemtype values:
+        $microdataItemtype = "Thing"; // http://schema.org/$microdataItemtype
+        $visibleItemtypeLabel = "Type"; // This is the visible label shown here
 
         // $zf2itemprop = array(); // zotero field => schema.org itemprop
         // $zf2itemName = array(); // zotero field => visible name
         // $zf2itemprop["abstractNote"] = "description"; $zf2itemName["abstractNote"] = "Description");
         // echo $zfield2itemprop["abstractNote"][0]; exit;
-        // switch ($json->itemType) {
-        switch ($json["itemType"]) {
 
-                //// Zotero - "itemType": "artwork", "localized": "Artwork"
-                //// Zotero - "itemType": "audioRecording", "localized": "Audio Recording"
-                //// Zotero - "itemType": "bill", "localized": "Bill"
-                //// Zotero - "itemType": "blogPost", "localized": "Blog Post"
+        switch ($json["itemType"]) { // Zotero "itemType"
 
-        case "book":
-                //// Zotero - "itemType": "book", "localized": "Book"
+        case "artwork": //// Zotero - "localized": "Artwork"
+                $microdataItemtype = "CreativeWork";
+                $visibleItemtypeLabel = "Artwork";
+                break;
+
+        case "audioRecording": //// Zotero - "localized": "Audio Recording"
+                $microdataItemtype = "AudioObject";
+                $visibleItemtypeLabel = "Audio";
+                break;
+        case "bill": //// "itemType": , "localized": "Bill"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Bill";
+                break;
+
+        case "blogPost": //// Zotero - "itemType": "blogPost", "localized": "Blog Post"
+                $microdataItemtype = "BlogPosting";   $visibleItemtypeLabel = "Blog Post";
+                break;
+
+        case "book": //// Zotero - "localized": "Book"
                 $microdataItemtype = "Book";   $visibleItemtypeLabel = "Book";
-                // https://api.zotero.org/itemTypeFields?itemType=book
-                // Zotero - "field": "ISBN", "localized": "ISBN"
-                // Zotero - "field": "abstractNote", "localized": "Abstract"
-                // Zotero - "field": "accessDate", "localized": "Accessed"
-                // Zotero - "field": "archive", "localized": "Archive"
-                // Zotero - "field": "archiveLocation", "localized": "Loc. in Archive"
-                // Zotero - "field": "callNumber", "localized": "Call Number"
-                // Zotero - "field": "date", "localized": "Date"
-                // Zotero - "field": "edition", "localized": "Edition"
-                // Zotero - "field": "extra", "localized": "Extra"
-                // Zotero - "field": "language", "localized": "Language"
-                // Zotero - "field": "libraryCatalog", "localized": "Library Catalog"
-                // Zotero - "field": "numPages", "localized": "# of Pages"
-                // Zotero - "field": "numberOfVolumes", "localized": "# of Volumes"
-                // Zotero - "field": "place", "localized": "Place"
-                // Zotero - "field": "publisher", "localized": "Publisher"
-                // Zotero - "field": "rights", "localized": "Rights"
-                // Zotero - "field": "series", "localized": "Series"
-                // Zotero - "field": "seriesNumber", "localized": "Series Number"
-                // Zotero - "field": "shortTitle", "localized": "Short Title"
-                // Zotero - "field": "title", "localized": "Title"
-                // Zotero - "field": "url", "localized": "URL"
-                // Zotero - "field": "volume", "localized": "Volume"
-
                 break;
 
-                //// Zotero - "itemType": "bookSection", "localized": "Book Section"
-                //// Zotero - "itemType": "case", "localized": "Case"
-                //// Zotero - "itemType": "computerProgram", "localized": "Computer Program"
-                //// Zotero - "itemType": "conferencePaper", "localized": "Conference Paper"
-                //// Zotero - "itemType": "dictionaryEntry", "localized": "Dictionary Entry"
-                //// Zotero - "itemType": "document", "localized": "Document"
-                //// Zotero - "itemType": "email", "localized": "E-mail"
-                //// Zotero - "itemType": "encyclopediaArticle", "localized": "Encyclopedia Article"
-                //// Zotero - "itemType": "film", "localized": "Film"
-                //// Zotero - "itemType": "forumPost", "localized": "Forum Post"
-                //// Zotero - "itemType": "hearing", "localized": "Hearing"
-                //// Zotero - "itemType": "instantMessage", "localized": "Instant Message"
-                //// Zotero - "itemType": "interview", "localized": "Interview"
+        case "bookSection": //// Zotero - "localized": "Book Section"
+                $microdataItemtype = "Book";   $visibleItemtypeLabel = "Book Section";
+                break;
 
-        case "journalArticle":
-                //// Zotero - "itemType": "journalArticle", "localized": "Journal Article"
+        case "case": //// Zotero - "localized": "Case"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Case";
+                break;
+        case "computerProgram": //// Zotero - "localized": "Computer Program"
+                $microdataItemtype = "SoftwareApplication";
+                $visibleItemtypeLabel = "Computer Program";
+                break;
+        case "conferencePaper": //// Zotero - "localized": "Conference Paper"
+                $microdataItemtype = "ScholarlyArticle";
+                $visibleItemtypeLabel = "Conference Paper";
+                break;
+        case "dictionaryEntry": //// Zotero - "localized": "Dictionary Entry"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Dictionary Entry";
+                break;
+        case "document": //// Zotero - "localized": "Document"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Document";
+                break;
+        case "email": //// Zotero - "localized": "E-mail"
+                $microdataItemtype = "EmailMessage";
+                $visibleItemtypeLabel = "E-mail";
+                break;
+        case "encyclopediaArticle": //// Zotero - "localized": "Encyclopedia Article"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Encyclopedia Article";
+                break;
+
+        case "film": //// Zotero - "localized": "Film"
+                $microdataItemtype = "Movie";   $visibleItemtypeLabel = "Film";
+                break;
+
+        case "forumPost": //// Zotero - "localized": "Forum Post"
+                $microdataItemtype = "EmailMessage";
+                $visibleItemtypeLabel = "Forum Post";
+                break;
+        case "hearing": //// Zotero - "localized": "Hearing"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Hearing";
+                break;
+        case "instantMessage": //// Zotero - "localized": "Instant Message"
+                $microdataItemtype = "EmailMessage";
+                $visibleItemtypeLabel = "Instant Message";
+                break;
+        case "interview": //// Zotero - "localized": "Interview"
+                $microdataItemtype = "Article";
+                $visibleItemtypeLabel = "Interview";
+                break;
+
+        case "journalArticle": //// Zotero - "localized": "Journal Article"
                 $microdataItemtype = "ScholarlyArticle";   $visibleItemtypeLabel = "Journal Article";
-                // https://api.zotero.org/itemTypeFields?itemType=journalArticle
-                // Zotero - "field": "title", "localized": "Title"
-                // Zotero - "field": "abstractNote", "localized": "Abstract"
-                // Zotero - "field": "publicationTitle", "localized": "Publication"
-                // Zotero - "field": "volume", "localized": "Volume"
-                // Zotero - "field": "issue", "localized": "Issue"
-                // Zotero - "field": "pages", "localized": "Pages"
-                // Zotero - "field": "date", "localized": "Date"
-                // Zotero - "field": "series", "localized": "Series"
-                // Zotero - "field": "seriesTitle", "localized": "Series Title"
-                // Zotero - "field": "seriesText", "localized": "Series Text"
-                // Zotero - "field": "journalAbbreviation", "localized": "Journal Abbr"
-                // Zotero - "field": "language", "localized": "Language"
-                // Zotero - "field": "DOI", "localized": "DOI"
-                // Zotero - "field": "ISSN", "localized": "ISSN"
-                // Zotero - "field": "shortTitle", "localized": "Short Title"
-                // Zotero - "field": "url", "localized": "URL"
-                // Zotero - "field": "accessDate", "localized": "Accessed"
-                // Zotero - "field": "archive", "localized": "Archive"
-                // Zotero - "field": "archiveLocation", "localized": "Loc. in Archive"
-                // Zotero - "field": "libraryCatalog", "localized": "Library Catalog"
-                // Zotero - "field": "callNumber", "localized": "Call Number"
-                // Zotero - "field": - "field": "rights", "localized": "Rights" 
                 break;
 
-                //// Zotero - "itemType": "letter", "localized": "Letter"
-                //// Zotero - "itemType": "magazineArticle", "localized": "Magazine Article"
-                //// Zotero - "itemType": "manuscript", "localized": "Manuscript"
-                //// Zotero - "itemType": "map", "localized": "Map"
+        case "letter": //// Zotero - "localized": "Letter"
+                $microdataItemtype = "EmailMessage";
+                $visibleItemtypeLabel = "Letter";
+                break;
 
-        case "newspaperArticle":
-                //// Zotero - "itemType": "newspaperArticle", "localized": "Newspaper Article"
+        case "magazineArticle": //// Zotero - "localized": "Magazine Article"
+                $microdataItemtype = "NewsArticle";   $visibleItemtypeLabel = "Magazine Article";
+                break;
+
+        case "manuscript": //// Zotero - "localized": "Manuscript"
+                $microdataItemtype = "CreeativeWork";
+                $visibleItemtypeLabel = "Manuscript";
+                break;
+        case "map": //// Zotero - "localized": "Map"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Map";
+                break;
+
+        case "newspaperArticle": //// Zotero - "localized": "Newspaper Article"
                 $microdataItemtype = "NewsArticle";   $visibleItemtypeLabel = "Newspaper Article";
                 break;
 
-                //// Zotero - "itemType": "note", "localized": "Note"
-                //// Zotero - "itemType": "patent", "localized": "Patent"
-                //// Zotero - "itemType": "podcast", "localized": "Podcast"
-                //// Zotero - "itemType": "presentation", "localized": "Presentation"
-                //// Zotero - "itemType": "radioBroadcast", "localized": "Radio Broadcast"
-                //// Zotero - "itemType": "report", "localized": "Report"
-                //// Zotero - "itemType": "statute", "localized": "Statute"
-                //// Zotero - "itemType": "tvBroadcast", "localized": "TV Broadcast"
-                //// Zotero - "itemType": "thesis", "localized": "Thesis"
+        case "note": //// Zotero - "localized": "Note"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Note";
+                break;
+        case "patent": //// Zotero - "localized": "Patent"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Patent";
+                break;
+        case "podcast": //// Zotero - "localized": "Podcast"
+                $microdataItemtype = "CreativeWork";
+                $visibleItemtypeLabel = "Podcast";
+                break;
+        case "presentation": //// Zotero - "localized": "Presentation"
+                $microdataItemtype = "CreativeWork";
+                $visibleItemtypeLabel = "Presentation";
+                break;
+        case "radioBroadcast": //// Zotero - "localized": "Radio Broadcast"
+                $microdataItemtype = "AudioObject";
+                $visibleItemtypeLabel = "Radio";
+                break;
+        case "report": //// Zotero - "localized": "Report"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Report";
+                break;
+        case "statute": //// Zotero - "localized": "Statute"
+                // $microdataItemtype = "Thing";
+                $visibleItemtypeLabel = "Statute";
+                break;
+        case "tvBroadcast": //// Zotero - "localized": "TV Broadcast"
+                $microdataItemtype = "VideoObject";
+                $visibleItemtypeLabel = "TV";
+                break;
 
-        case "videoRecording":
-                //// Zotero - "itemType": "videoRecording", "localized": "Video Recording"
+        case "thesis": //// Zotero - "localized": "Thesis"
+                $microdataItemtype = "ScholarlyArticle";   $visibleItemtypeLabel = "Thesis";
+                break;
+
+        case "videoRecording": //// Zotero - "localized": "Video Recording"
                 $microdataItemtype = "VideoObject";   $visibleItemtypeLabel = "Video";
                 break;
 
-        case "webpage":
-                //// Zotero - "itemType": "webpage", "localized": "Web Page"
+        case "webpage": //// Zotero - "localized": "Web Page"
                 $microdataItemtype = "WebPage";   $visibleItemtypeLabel = "Web Page";
                 break;
 
         default:
-                $microdataItemtype = "CreativeWork";   $visibleItemtypeLabel = "Unhandled Zotero type";
+                // $microdataItemtype = "CreativeWork";   $visibleItemtypeLabel = "Unhandled Zotero type";
         }
         // echo $json->itemType; echo "\n";
         // echo $visibleItemtypeLabel; echo "\n";
@@ -617,7 +662,7 @@ try {
         ///////////////////////////////////////////////////////////////////////
         //// All Zotero field names, put the most interesting ones in "Details".
         //
-        // Use them here. Or, if used before add "USED" here.
+        // Use them here. Or, if already used above add "USED" here.
         //
         // fix-me: how did i get these??
         //
