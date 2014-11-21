@@ -765,6 +765,10 @@ a[target]::after {
 /***********************
  * TEST ************/
 
+.no-newspaper-cols {
+    max-width: 550px;
+}
+
 /* mkCss3Columns("newspaper-cols", 550, null); */
 .newspaper-cols {
 -webkit-column-rule: 1px solid #efefef;

@@ -1,6 +1,16 @@
 <?php
 namespace ZSitemap;
 
+// See zformat2.php for info.
+//
+// See the rewrite rules below for how to set the usage of this up.
+//
+// The url of this file (with Zotero group ID added as described
+// below) is what should be submitted to for example Google for
+// indexing.
+
+
+
 ////// Zotero forum
 // https://forums.zotero.org/discussion/33988/google-indexing-and-the-look-of-the-items-pages/
 
@@ -11,7 +21,8 @@ namespace ZSitemap;
 ////// Create a site map, see http://erikastokes.com/sitemaps/
 // http://webmasters.stackexchange.com/questions/49589/sitemap-xml-file-extension-does-it-have-to-be-xml
 
-////// Rewrite rules so we can use "site search":
+////// Rewrite rules (for Apache servers .htaccess) so we can use "site search":
+//
 // https://www.addedbytes.com/articles/for-beginners/url-rewriting-for-beginners/
 // http://stackoverflow.com/questions/5493075/apache-rewrite-get-original-url-in-php
 //
