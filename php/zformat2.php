@@ -72,6 +72,9 @@ $zk="NH6N7CP9"; $zgi="136570";
 $zk="WQG7QNXW"; $zgi="56508";
 $zk  = "T9UKVMIX";
 $zk  = "3B6TR25A";
+$zk="WQG7QNXW"; $zgi="56508";
+$zk = "KNGQSQFD";
+$zk = "WQG7QNXW";
 if (array_key_exists("zgi", $_GET)) { $zgi = htmlspecialchars($_GET["zgi"]); }
 if (array_key_exists("zk", $_GET)) { $zk = htmlspecialchars($_GET["zk"]); }
 // echo $zk; exit;
@@ -101,16 +104,26 @@ function mkElt($type, $attrib, $inner) {
         }
         $elt .= ">";
         if (isset($inner)) {
-                if (gettype($inner) == "string") { $elt .= $inner; } else { $elt .= join("", $inner); }
+                // echo gettype($inner); exit;
+                // echo $inner; exit;
+                if (gettype($inner) == "array") {
+                        // echo var_dump($inner); // exit;
+                        // echo gettype($inner); // exit;
+                        $elt .= join("", $inner);
+                        // echo $elt . "\n\n\n\n\n\n"; // exit;
+                } else {
+                        $elt .= $inner;
+                }
                 $elt .= "</" . $type . ">";
         }
         return $elt;
 }
+// Add a space for Google search indexing and snippets
 function mkDt($title) {
         return mkElt("span", array( "class" => "dt" ), $title . " ");
 }
 function mkDd($desc) {
-        return mkElt("span", array( "class" => "dd" ), $desc);
+        return mkElt("span", array( "class" => "dd" ), $desc . " ");
 }
 function mkRow($dt, $dd, $id, $class) {
         $classes = "drow";
@@ -157,6 +170,39 @@ function mkGoogleDefine($what) {
         return mkElt("a", array("href"=>$href), $what);
 }
 
+// Work around for some bugs in date_parse (tested in PHP 5.5.19)
+//   http://php.net/manual/en/function.date-parse.php
+//   For testing 
+//
+// Date formats that are cannot be parsed correctly withoug this fix:
+//   1) "2014" - Valid ISO 8061 date format but not recognized by date_parse.
+//   2) "Feb 2010" - Parsed but gives ["day"] => 1.
+function date_parse_5_5_bugfix($dateRaw) {
+        // Check "2014" bug:
+        $dateRaw = trim($dateRaw);
+        if (strlen($dateRaw) === 4 && preg_match("/\d{4}/", $dateRaw) === 1) {
+                $da = date_parse($dateRaw . "-01-01");
+                $da["month"] = false;
+                $da["day"] = false;
+        } else {
+                $da = date_parse($dateRaw);
+                if ($da) {
+                        if (array_key_exists("year", $da)
+                            && array_key_exists("month", $da)
+                            && array_key_exists("day", $da))
+                                {
+                                        if ($da["day"] === 1) {
+                                                // Check "Feb 2010" bug:
+                                                // http://www.phpliveregex.com/
+                                                if (preg_match("/\b0?1(?:\b|T)/", $dateRaw) !== 1) {
+                                                        $da["day"] = false;
+                                                }
+                                        }
+                                }
+                }
+        }
+        return $da;
+}
 
 
 
@@ -239,20 +285,22 @@ try {
         $zotlink = $xml->link[1]['href'];
         // echo $zotlink; exit;
         $url = $zotlink; // fallback, fix-me: need a better one, error reporting etc.
-        if (array_key_exists("url", $json)) {
+        // echo var_dump($json); exit;
+        if (array_key_exists("url", $json) && $json["url"] !== "") {
                 // $url = $json->url;
                 $url = $json["url"];
         } else {
-                if (array_key_exists("doi", $json)) {
-                        // $doi = $json->doi;
-                        $doi = $json["doi"];
-                        $url = "http://dx.doi.org/" . $doi;
+                if (array_key_exists("DOI", $json)) {
+                        $doi = $json["DOI"];
+                        $doi = trim($doi);
+                        if (strlen($doi) > 0) { $url = "http://dx.doi.org/" . $doi; }
                 }
         }
         
 
         // $twitterTitle = $title;
         $twitterFullTitle = "";
+        $twitterDescription = "";
 
         //// title - always there!
         // Zotero - "field": "title", "localized": "Title"
@@ -516,8 +564,7 @@ try {
         if (array_key_exists("abstractNote", $json)) {
                 // $abstractNote = $json->abstractNote;
                 $abstractNote = $json["abstractNote"];
-                $abstractNote = rtrim($abstractNote);
-                $abstractNote = ltrim($abstractNote);
+                $abstractNote = trim($abstractNote);
                 if (strlen($abstractNote) > 0) {
                         $twitterDescription = substr($abstractNote, 0, 200);
                         // echo $twitterDescription; exit;
@@ -563,27 +610,17 @@ try {
                 $dateRaw = rtrim($dateRaw);
                 if (strlen($dateRaw) > 0) {
                         $date = $dateRaw;
-                        // Note: Just "2014" will return false, but this is fixed the the above.
-                        $da = date_parse($dateRaw);
+                        $da = date_parse_5_5_bugfix($dateRaw);
                         if ($da) {
                                 $yyyy = $da["year"];
-                                $mm   = $da["month"];
-                                $dd   = $da["day"];
                                 if ($yyyy) {
                                         $date = $yyyy;
+                                        $mm   = $da["month"];
                                         if ($mm) {
                                                 $date .= "-" . sprintf("%02d", $mm);
-                                                if ($dd) {
-                                                        // fix-me: If it is 1 then it is probably the bug...
-                                                        if ($dd !== 1) {
-                                                                $date .= "-" . sprintf("%02d", $dd);
-                                                        }
-                                                }
+                                                $dd   = $da["day"];
+                                                if ($dd) { $date .= "-" . sprintf("%02d", $dd); }
                                         }
-                                }
-                        } else {
-                                if (preg_match("#[0-9]{4}#", $dateRaw, $match) === 1) {
-                                        $yyyy = $match[0];
                                 }
                         }
                 }
@@ -696,10 +733,14 @@ try {
         // Zotero - "field": "court", "localized": "Court"
         // Zotero - "field": "DOI", "localized": "DOI"
         if (array_key_exists("DOI", $json)) {
-                $fragDetails .= mkRow("DOI",
-                                      mkElt("a",
-                                            array("href"=>"http://dx.doi.org/"+$json["DOI"]),
-                                            $json["DOI"]), null, null);
+                $doi = $json["DOI"];
+                $doi = trim($doi);
+                if (strlen($doi) > 0) {
+                        $fragDetails .= mkRow("DOI",
+                                              mkElt("a",
+                                                    array("href"=>"http://dx.doi.org/" . $doi),
+                                                    $doi), null, null);
+                }
         }
         // Zotero - "field": "date", "localized": "Date"
         // Zotero - "field": "dateDecided", "localized": "Date Decided"
@@ -800,7 +841,7 @@ try {
 
         if (array_key_exists("extra", $json)) {
                 $extra = $json["extra"];
-                // fix-me: word begin
+                // fix-me: word begin, url:s
                 if (preg_match("/pmid: *([0-9a-z]+)/i", $extra, $match) === 1) {
                         $fragDetails .= mkDetail("PMID", $match[1]);
                 }
@@ -857,6 +898,15 @@ try {
 // echo $body; exit;
 // $title = "the title";
 
+$relations = $json["relations"];
+$relationsJson = json_encode($relations);
+// var_dump($relationsJson); exit;
+// echo $relationsJson; exit;
+// var_dump($relations); exit;
+
+
+ob_start("ob_gzhandler");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -879,6 +929,7 @@ try {
       php_zgi = "<?php echo $zgi; ?>";
       php_zk = "<?php echo $zk; ?>";
       // php_json = <php echo $content; >;
+      php_relations = <?php echo $relationsJson; ?>;
       <?php if (isset($parent_zgrp) && $parent_zgrp) { ?>
         php_parent_zgrp = "<?php echo $parent_zgrp; ?>";
         php_parent_zid  = "<?php echo $parent_zid; ?>";
@@ -900,7 +951,7 @@ try {
     <!-- <script type="text/javascript" src="js/zformat-cld.js"></script> -->
 
     <link rel="stylesheet" href="http://dl.dropboxusercontent.com/u/848981/it/z/css/zformat2.css" />
-    <script id="zformat-js" src="http://dl.dropboxusercontent.com/u/848981/it/z/js/zformat2-cld.js"></script>
+    <script id="zformat-js" async src="http://dl.dropboxusercontent.com/u/848981/it/z/js/zformat2-cld.js"></script>
 
     <!-- Twitter cards
          ================================================== -->
@@ -934,7 +985,6 @@ try {
                 <span class="zotero-name" id="zotero1"><span>z</span>otero</span>
               <img src="http://dl.dropboxusercontent.com/u/848981/it/z/img/info.svg">
             </a>
-            <br>
             <span id="cite" tabstop="0" title="Copy reference etc">
               <img src="https://dl.dropboxusercontent.com/u/848981/it/z/img/double-quote-serif-left.svg">
               &nbsp;Cite&nbsp;

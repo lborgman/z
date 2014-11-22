@@ -50,10 +50,13 @@ var theAfterDays = 25;
 // }
 
 
-
+// fix-me: make a creator function with grpId!!!
 function displayLatestList(jsons, outputElt) {
     // var formatterURL = "http://dl.dropboxusercontent.com/u/848981/it/z/js/zformat.html";
     var formatterURL = "http://ourcomments.org/cgi-bin/zformat.php";
+    function formatURL(zgi, zk) {
+        return "http://ourcomments.org/zformat/g/"+zgi+"/i/"+zk;
+    }
     // console.log(jsons); debugger;
     var fragment = document.createDocumentFragment();
     var afterDate = new Date();
@@ -104,6 +107,8 @@ function displayLatestList(jsons, outputElt) {
                         "zk="+itemKey
                     ].join("&")
                 ;
+                // fix-me: which group??
+                href = formatURL(zoteroGrpIds[0], itemKey);
                 var title = json["title"];
                 var linkElt = mkElt("a", {"href":href, "target":"_blank", "class":"myNew-link"}, title);
                 var abstrDiv = mkElt("div", {"class":"myNew-abs-div"}, abstr);

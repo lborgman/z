@@ -64,201 +64,202 @@
         return mkElt("div", { "class":"drow" }, [mkDt(dt),mkDd(dd)]);
     }
     var relations = null;
-    function parseAndOutputMain(jsons, nodeOutput) {
-        var json = jsons[0];
-        // console.log("json", json);
-        relations = json["relations"];
-        requestChildren();
-        return; // fix-me
+    if (typeof php_relations !== "undefined") relations = php_relations;
+    // function parseAndOutputMain(jsons, nodeOutput) {
+//         var json = jsons[0];
+//         // console.log("json", json);
+//         relations = json["relations"];
+//         requestChildren();
+//         return; // fix-me
 
 
-        var frag = document.createDocumentFragment();
-        var url = json["url"];
-        // console.log("json", json);
-        // for (var key in json) { console.log(key, json[key]); }
-        // console.log("json url", url);
-        if (!url) {
-            var doi = json["DOI"];
-            if (doi) url = "http://dx.doi.org/"+doi;
-        }
-        if (!url) {
-            url = "javascript:alert('Sorry, I do not know the link. It might be in the attachments below!'); void(0)";
-        } else {
-            theUrl = url;
-        }
-        var title = json["title"];
-        // var twitterTitle = title;
-        frag.appendChild(mkRow("Title",
-                               mkElt("h1", {"class":"h1-title", "id":"ref-title"},
-                                     mkElt("a",
-                                           { "href":url,
-                                             // "id":"ref-title",
-                                             "xtarget":"_blank",
-                                             "title":"Visit source",
-                                             "itemprop":"name"
-                                           },
-                                           title))));
-        document.head.appendChild(mkElt("title", null, "Z: "+title));
+//         var frag = document.createDocumentFragment();
+//         var url = json["url"];
+//         // console.log("json", json);
+//         // for (var key in json) { console.log(key, json[key]); }
+//         // console.log("json url", url);
+//         if (!url) {
+//             var doi = json["DOI"];
+//             if (doi) url = "http://dx.doi.org/"+doi;
+//         }
+//         if (!url) {
+//             url = "javascript:alert('Sorry, I do not know the link. It might be in the attachments below!'); void(0)";
+//         } else {
+//             theUrl = url;
+//         }
+//         var title = json["title"];
+//         // var twitterTitle = title;
+//         frag.appendChild(mkRow("Title",
+//                                mkElt("h1", {"class":"h1-title", "id":"ref-title"},
+//                                      mkElt("a",
+//                                            { "href":url,
+//                                              // "id":"ref-title",
+//                                              "xtarget":"_blank",
+//                                              "title":"Visit source",
+//                                              "itemprop":"name"
+//                                            },
+//                                            title))));
+//         document.head.appendChild(mkElt("title", null, "Z: "+title));
 
-        var authorsFrag = document.createDocumentFragment();
-        var creators = json["creators"];
-        var twitterFullTitle = "";
-        if (creators) {
-            for (var i=0; i<creators.length; i++) {
-                var fN = creators[i]["firstName"];
-                var lN = creators[i]["lastName"];
-                if (lN || fN) {
-                    lN = lN.trim();
-                    fN = fN.trim();
-                    if (lN.length > 0 || fN.length > 0) {
-                        // if (authors.length>0) authors += ", ";
-                        if (authorsFrag.length > 0) authorsFrag.appendChild(document.createTextNode(", "));
-                        // authors += fN+" "+lN;
-                        authorsFrag.appendChild(mkElt("span", {"itemprop":"author"},  fN+" "+lN));
-                    }
-                }
-                if (0===i) twitterFullTitle = fN+" "+lN; // authors;
-            }
-            // authors = authors.trim();
-            if (authorsFrag.childElementCount > 0) frag.appendChild(mkRow("Authors", authorsFrag));
-        }
+//         var authorsFrag = document.createDocumentFragment();
+//         var creators = json["creators"];
+//         var twitterFullTitle = "";
+//         if (creators) {
+//             for (var i=0; i<creators.length; i++) {
+//                 var fN = creators[i]["firstName"];
+//                 var lN = creators[i]["lastName"];
+//                 if (lN || fN) {
+//                     lN = lN.trim();
+//                     fN = fN.trim();
+//                     if (lN.length > 0 || fN.length > 0) {
+//                         // if (authors.length>0) authors += ", ";
+//                         if (authorsFrag.length > 0) authorsFrag.appendChild(document.createTextNode(", "));
+//                         // authors += fN+" "+lN;
+//                         authorsFrag.appendChild(mkElt("span", {"itemprop":"author"},  fN+" "+lN));
+//                     }
+//                 }
+//                 if (0===i) twitterFullTitle = fN+" "+lN; // authors;
+//             }
+//             // authors = authors.trim();
+//             if (authorsFrag.childElementCount > 0) frag.appendChild(mkRow("Authors", authorsFrag));
+//         }
 
-        var abstractNote = json["abstractNote"];
-        if (abstractNote) {
-            abstractNote = abstractNote.trim();
-            if (abstractNote.length > 0) {
-                document.querySelector("head meta[name='twitter:description']")
-                    .setAttribute("content", abstractNote.substr(0,200));
-                // Preserve new lines
-                var noteLines = abstractNote.split("\n");
-                // console.log("abs length", abstractNote.length);
-                var classes = "sixteen columns";
-                if (abstractNote.length > 500) // 3-4 rows
-                    classes += " newspaper-cols";
-                var fragAbstract = mkElt("div", {"class":classes});
-                for (var i=0; i<noteLines.length; i++) {
-                    if (fragAbstract.childNodes.length > 0) fragAbstract.appendChild(mkElt("div", {"class":"br"}));
-                    // fragAbstract.appendChild(document.createTextNode(noteLines[i]));
-                    var n = mkElt("span", null);
-                    n.innerHTML = noteLines[i];
-                    fragAbstract.appendChild(n);
-                }
-                frag.appendChild(mkRow("Abstract", fragAbstract));
-            }
-        }
-        var date = json["date"];
-        if (date) {
-            date = date.trim();
-            var m = new RegExp("[0-9]{4}").exec(date);
-            if (m[0]) {
-                if (twitterFullTitle.length > 0) twitterFullTitle += " ";
-                twitterFullTitle += "("+m[0]+")";
-            }
-        }
-        if (twitterFullTitle.length > 0) twitterFullTitle += ". ";
-        twitterFullTitle += title;
-        document.querySelector("head meta[name='twitter:title']")
-            .setAttribute("content", twitterFullTitle);
+//         var abstractNote = json["abstractNote"];
+//         if (abstractNote) {
+//             abstractNote = abstractNote.trim();
+//             if (abstractNote.length > 0) {
+//                 document.querySelector("head meta[name='twitter:description']")
+//                     .setAttribute("content", abstractNote.substr(0,200));
+//                 // Preserve new lines
+//                 var noteLines = abstractNote.split("\n");
+//                 // console.log("abs length", abstractNote.length);
+//                 var classes = "sixteen columns";
+//                 if (abstractNote.length > 500) // 3-4 rows
+//                     classes += " newspaper-cols";
+//                 var fragAbstract = mkElt("div", {"class":classes});
+//                 for (var i=0; i<noteLines.length; i++) {
+//                     if (fragAbstract.childNodes.length > 0) fragAbstract.appendChild(mkElt("div", {"class":"br"}));
+//                     // fragAbstract.appendChild(document.createTextNode(noteLines[i]));
+//                     var n = mkElt("span", null);
+//                     n.innerHTML = noteLines[i];
+//                     fragAbstract.appendChild(n);
+//                 }
+//                 frag.appendChild(mkRow("Abstract", fragAbstract));
+//             }
+//         }
+//         var date = json["date"];
+//         if (date) {
+//             date = date.trim();
+//             var m = new RegExp("[0-9]{4}").exec(date);
+//             if (m[0]) {
+//                 if (twitterFullTitle.length > 0) twitterFullTitle += " ";
+//                 twitterFullTitle += "("+m[0]+")";
+//             }
+//         }
+//         if (twitterFullTitle.length > 0) twitterFullTitle += ". ";
+//         twitterFullTitle += title;
+//         document.querySelector("head meta[name='twitter:title']")
+//             .setAttribute("content", twitterFullTitle);
 
-        if (!date || 0==date.length) date = json["accessDate"]+" (accessed)";
-        // console.log("date",date);
-        if (date) date = ", "+date;
+//         if (!date || 0==date.length) date = json["accessDate"]+" (accessed)";
+//         // console.log("date",date);
+//         if (date) date = ", "+date;
 
-        var itemType = getItemType(json["itemType"]);
+//         var itemType = getItemType(json["itemType"]);
 
-        var genPublisher = json["publicationTitle"] || json["websiteTitle"] || json["publisher"];
-        if (!genPublisher) {
-            var url = json["url"];
-            if (url) {
-                var m = new RegExp("https?://[^/]*").exec(url);
-                // genPublisher = mkElt("a", {"href":m[0], "xtarget":"_blank"}, m[0]);
-                genPublisher = mkElt("a", {"href":url, "xtarget":"_blank"}, m[0]);
-            }
-            if (!genPublisher) genPublisher = "Unknown source";
-        }
-        frag.appendChild(mkRow(itemType, [genPublisher,date]));
+//         var genPublisher = json["publicationTitle"] || json["websiteTitle"] || json["publisher"];
+//         if (!genPublisher) {
+//             var url = json["url"];
+//             if (url) {
+//                 var m = new RegExp("https?://[^/]*").exec(url);
+//                 // genPublisher = mkElt("a", {"href":m[0], "xtarget":"_blank"}, m[0]);
+//                 genPublisher = mkElt("a", {"href":url, "xtarget":"_blank"}, m[0]);
+//             }
+//             if (!genPublisher) genPublisher = "Unknown source";
+//         }
+//         frag.appendChild(mkRow(itemType, [genPublisher,date]));
 
-        var tags = json["tags"];
-        if (tags.length>0) {
-            var tagFrag = mkElt("div", {"id":"tag-container"}); //document.createDocumentFragment();
-            var eltTag = [];
-            var chkBox = [];
-            for (var i=0; i<tags.length; i++) {
-                var tag = tags[i];
-                // console.log("tag", tag);
-                chkBox[i] = mkElt("input",{ "type":"checkbox", "style":"display:none"});
-                chkBox[i].addEventListener("click", function(ev){
-                    ev.stopPropagation();
-                    if (!this.checked) {
-                        this.style.display = "none";
-                        this.parentNode.classList.remove("checked-tag");
-                    } else {
-                        this.parentNode.classList.add("checked-tag");
-                        this.style.display = "inline-block";
-                    }
-                    var selected = document.getElementById("tag-container").querySelectorAll(".checked-tag");
-                    // console.log("checked tags", selected);
-                    var searchElt = document.getElementById("search-tags-div");
-                    var searchGlass = document.getElementById("glass-cont");
-                    if (selected.length > 0) {
-                        // searchElt.style.display = "block";
-                        // searchGlass.style.opacity = 1;
-                        searchGlass.classList.add("glass-searchable");
-                    } else {
-                        // searchElt.style.display = "none";
-                        // searchGlass.style.opacity = null;
-                        searchGlass.classList.remove("glass-searchable");
-                    }    
-                });
-                eltTag[i] = mkElt("label", {"class":"tag"}, [tag.tag, chkBox[i]]);
-                tagFrag.appendChild(eltTag[i]);
-            }
-            var searchTags = mkElt("a", {"id":"search-tags", "xtarget":"_blank"}, "Search for tags");
-            searchTags.addEventListener("click", function(){
-                var selected = document.getElementById("tag-container").querySelectorAll(".checked-tag");
-                var searchStr = "";
-                for (var i=0; i<selected.length; i++) {
-                    // console.log(selected[i].firstChild);
-                    if (searchStr.length > 0) searchStr += " ";
-                    searchStr += '"'+selected[i].firstChild.nodeValue+'"';
-                }
-                // console.log(searchStr);
-                this.setAttribute("href",
-                                  // Fix-me: How to choose search form??? Fix this in rewrite.
-                                  // "http://ourcomments.org/psych/zfsp.html?q="
-                                  params["f"]
-                                  +"?q="
-                                  +encodeURIComponent(searchStr));
-            });
-            var searchDiv = mkElt("div", {"id":"search-tags-div","style":"display:none"}, searchTags);
-            frag.appendChild(mkRow("Tags", [tagFrag,searchDiv]));
-        }
-        // var btnCite = mkElt("span", {"id":"cite-div", "title":"Show citation"}, "\u25BA"); // big arrow??
-        // var btnCite = document.getElementById("cite");
-        // btnCite.addEventListener("click", function(){
-        //     requestCitation();
-        // });
-        // frag.appendChild(mkRow("How to Cite", btnCite));
-        var newBtnCite = mkElt("a", {"id":"copy-ref", "href":"#"}, "Copy reference etc");
-        newBtnCite.addEventListener("click", function(ev) {
-            ev.stopPropagation();
-            ev.stopImmediatePropagation();
-            ev.preventDefault();
-            doCopyRef(grpId, itemKey);
-        });
-        frag.appendChild(mkRow("Cite", newBtnCite));
+//         var tags = json["tags"];
+//         if (tags.length>0) {
+//             var tagFrag = mkElt("div", {"id":"tag-container"}); //document.createDocumentFragment();
+//             var eltTag = [];
+//             var chkBox = [];
+//             for (var i=0; i<tags.length; i++) {
+//                 var tag = tags[i];
+//                 // console.log("tag", tag);
+//                 chkBox[i] = mkElt("input",{ "type":"checkbox", "style":"display:none"});
+//                 chkBox[i].addEventListener("click", function(ev){
+//                     ev.stopPropagation();
+//                     if (!this.checked) {
+//                         this.style.display = "none";
+//                         this.parentNode.classList.remove("checked-tag");
+//                     } else {
+//                         this.parentNode.classList.add("checked-tag");
+//                         this.style.display = "inline-block";
+//                     }
+//                     var selected = document.getElementById("tag-container").querySelectorAll(".checked-tag");
+//                     // console.log("checked tags", selected);
+//                     var searchElt = document.getElementById("search-tags-div");
+//                     var searchGlass = document.getElementById("glass-cont");
+//                     if (selected.length > 0) {
+//                         // searchElt.style.display = "block";
+//                         // searchGlass.style.opacity = 1;
+//                         searchGlass.classList.add("glass-searchable");
+//                     } else {
+//                         // searchElt.style.display = "none";
+//                         // searchGlass.style.opacity = null;
+//                         searchGlass.classList.remove("glass-searchable");
+//                     }    
+//                 });
+//                 eltTag[i] = mkElt("label", {"class":"tag"}, [tag.tag, chkBox[i]]);
+//                 tagFrag.appendChild(eltTag[i]);
+//             }
+//             var searchTags = mkElt("a", {"id":"search-tags", "xtarget":"_blank"}, "Search for tags");
+//             searchTags.addEventListener("click", function(){
+//                 var selected = document.getElementById("tag-container").querySelectorAll(".checked-tag");
+//                 var searchStr = "";
+//                 for (var i=0; i<selected.length; i++) {
+//                     // console.log(selected[i].firstChild);
+//                     if (searchStr.length > 0) searchStr += " ";
+//                     searchStr += '"'+selected[i].firstChild.nodeValue+'"';
+//                 }
+//                 // console.log(searchStr);
+//                 this.setAttribute("href",
+//                                   // Fix-me: How to choose search form??? Fix this in rewrite.
+//                                   // "http://ourcomments.org/psych/zfsp.html?q="
+//                                   params["f"]
+//                                   +"?q="
+//                                   +encodeURIComponent(searchStr));
+//             });
+//             var searchDiv = mkElt("div", {"id":"search-tags-div","style":"display:none"}, searchTags);
+//             frag.appendChild(mkRow("Tags", [tagFrag,searchDiv]));
+//         }
+//         // var btnCite = mkElt("span", {"id":"cite-div", "title":"Show citation"}, "\u25BA"); // big arrow??
+//         // var btnCite = document.getElementById("cite");
+//         // btnCite.addEventListener("click", function(){
+//         //     requestCitation();
+//         // });
+//         // frag.appendChild(mkRow("How to Cite", btnCite));
+//         var newBtnCite = mkElt("a", {"id":"copy-ref", "href":"#"}, "Copy reference etc");
+//         newBtnCite.addEventListener("click", function(ev) {
+//             ev.stopPropagation();
+//             ev.stopImmediatePropagation();
+//             ev.preventDefault();
+//             doCopyRef(grpId, itemKey);
+//         });
+//         frag.appendChild(mkRow("Cite", newBtnCite));
 
-        while(nodeOutput.firstChild) nodeOutput.removeChild(nodeOutput.firstChild);
-        nodeOutput.appendChild(frag);
+//         while(nodeOutput.firstChild) nodeOutput.removeChild(nodeOutput.firstChild);
+//         nodeOutput.appendChild(frag);
 
-        // Collect related, but put them under links.
-        // console.log(json);
-        // console.log("relations 1", relations);
-        // for (var r in relations) console.log("relations r=", r, relations[r]);
-        // for (var k in json) console.log("json k=", k);
-        relations = json["relations"];
-        requestChildren();
-    }
+//         // Collect related, but put them under links.
+//         // console.log(json);
+//         // console.log("relations 1", relations);
+//         // for (var r in relations) console.log("relations r=", r, relations[r]);
+//         // for (var k in json) console.log("json k=", k);
+//         relations = json["relations"];
+//         requestChildren();
+//     }
     function getItemType(jsonItemType) {
         return myItemTypes[jsonItemType] || jsonItemType;
     }
@@ -272,6 +273,24 @@
         var myHref = window.location.href;
         var m = new RegExp("[^?]*").exec(myHref);
         var myFormatter = m[0];
+        console.log(m[0]);
+        console.log(myHref);
+        var rewriteStyle = m[0] === myHref;
+        if (rewriteStyle) {
+            var m2 = new RegExp("(.*)"+php_zgi+"(.*)"+php_zk+"(.*)").exec(myHref);
+            rewriteStyle = m2;
+            console.log("m2", m2);
+        }
+        function formatterHref(cZgi, cZk) {
+            if (rewriteStyle) {
+                return m2[1]+cZgi+m2[2]+cZk+m2[3];
+            } else {
+                return myFormatter
+                    +"?zgi="+cZgi
+                    +"&zk="+cZk;
+            }
+        }
+        console.log(formatterHref("AAAAAA", "BBBBBB"));
 
         var imgLoader = function() {
             var emptyImg = document.getElementById("output-attachments").querySelectorAll("img");
@@ -403,9 +422,8 @@
             var parentOrigHref = "http://zotero.org/groups/"+php_parent_zgrp+"/items/"+php_parent_zid;
             var key = php_parent_zid;
             var grpId = php_parent_zgrp;
-            var formatHref = myFormatter
-                +"?zgi="+grpId
-                +"&zk="+key
+            // var formatHref = myFormatter +"?zgi="+grpId +"&zk="+key
+            var formatHref = formatterHref(grpId, key);
             // +"&f="+params.f
             ;
             var zURL = myURLBuilder.itemXML(key);
@@ -460,11 +478,10 @@
                     var m = origHrefRe.exec(relatedOrigHrefs[i]);
                     var grpId = m[1];
                     var key = m[2];
-                    var formatHref = myFormatter
-                        +"?zgi="+grpId
-                        +"&zk="+key
+                    // var formatHref = myFormatter +"?zgi="+grpId +"&zk="+key
                         // +"&f="+params.f
                     ;
+                    var formatHref = formatterHref(grpId, key);
                     var zURL = myURLBuilder.itemXML(key);
                     var title = key;
                     // wrap it to give the callback a variable:
@@ -525,7 +542,7 @@
                 var summaryElt = mkElt("summary", null, "note");
                 var descElt = mkElt("span", {"style":"display:none"},
                                     "Due to a bug in Zotero relations are not"
-                                    +" displayed both ways."
+                                    +" always displayed both ways."
                                     +" So the relation you see here may not be"
                                     +" seen on related documents below."
                                     +" (Hm, it might be gone now. No, it is not!)")
@@ -581,15 +598,15 @@
         divCite2.parentNode.replaceChild(divCite, divCite2);
     }
 
-    function requestMain() {
-        console.log("requestMain -----------------------------");
-        var outputElt = document.getElementById("output");
-        outputElt.replaceChild(mkElt("div",null,
-                                      mkElt("span",null,"Waiting for main content from Zotero...")),
-                                outputElt.firstChild);
-        var zURL = myURLBuilder.item(itemKey);
-        ZReader.zReaderRequest(zURL, outputElt, parseAndOutputMain, getLibFromXml);
-    }
+    // function requestMain() {
+    //     console.log("requestMain -----------------------------");
+    //     var outputElt = document.getElementById("output");
+    //     outputElt.replaceChild(mkElt("div",null,
+    //                                   mkElt("span",null,"Waiting for main content from Zotero...")),
+    //                             outputElt.firstChild);
+    //     var zURL = myURLBuilder.item(itemKey);
+    //     ZReader.zReaderRequest(zURL, outputElt, parseAndOutputMain, getLibFromXml);
+    // }
     function getLibFromXml(zXml) {
         console.log("getLibFromXml -----------------------------");
         var zotInfoTag = document.getElementById("libinfolink");
@@ -714,9 +731,11 @@
         console.log("requestChildren ----------------------------");
         var nodeOutput = document.getElementById("output-attachments");
         if (typeof php_parent_zid === "undefined") {
+            console.log("php_parent_zid === undefined");
             var zURL = myURLBuilder.children(itemKey);
             ZReader.zReaderRequest(zURL, nodeOutput, parseAndOutputChildren, getLibFromXml);
         } else {
+            console.log("php_parent_zid !== undefined");
             parseAndOutputChildren([], nodeOutput);
         }
     }
@@ -757,6 +776,9 @@
                 ev.target.mousedown();
             });
             document.body.addEventListener("mouseup", function(){
+                setGlassSearchStr();
+            });
+            document.body.addEventListener("touchend", function(){
                 setGlassSearchStr();
             });
             

@@ -1,13 +1,3 @@
-/*
- * Skeleton V1.2
- * Copyright 2011, Dave Gamache
- * www.getskeleton.com
- * Free to use under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
- * 6/20/2012
- */
-
-
 /* Table of Content
    ==================================================
    #Reset & Basics
@@ -392,8 +382,9 @@ a#copy-ref:hover {
 }
 #cite {
     background: orange;
-    padding: 4px;
+    padding: 6px;
     cursor: pointer;
+    font-size: 18px;
 }
 #cite:hover {
     background: yellow;
@@ -527,11 +518,6 @@ div.br {
 i {
     font-style: italic;
 }
-/* button#cite-div { */
-/*     height: 20px; */
-/*     padding-top: 0; */
-/*     padding-bottom: 0; */
-/* } */
 span#cite-div {
     cursor: pointer;
 }
@@ -539,15 +525,23 @@ span#cite-div:hover {
     color: green;
 }
 label.tag {
-    margin-right: 12px;
+    flex: 0 0 150px;
     display: inline-block;
+    xwidth: 150px;
+    min-height: 32px;
+    line-height: normal;
+    padding: 8px;
     cursor: pointer;
+    border-right: 1px solid white;
+    border-bottom: 1px solid white;
 }
 label.tag:hover {
     background: #ffc;
 }
 label.tag.checked-tag {
     background: #cf0;
+    border-bottom: 1px solid #E8F0D8;
+    border-right: 1px solid #E8F0D8;
 }
 #search-tags {
     background: #cf0;
@@ -559,6 +553,13 @@ label.tag.checked-tag {
     text-align: center;
 }
 
+#tag-container .dd {
+    /* Bug in chrome makes the field very high when using columns */
+    /* column-width: 150px; */
+    /* column-rule: 1px solid #ddd; */
+    display: flex;
+    flex-wrap: wrap;
+}
 
 
 
@@ -571,8 +572,11 @@ label.tag.checked-tag {
 }
 
 #upper-right-links {
+    display: flex;
+    flex-direction: column;
     margin-top: 0px;
-    text-align: right;
+    text-align: center;
+    xbackground: #aaa;
 }
 #upper-right-links a {
     display: inline-block;
@@ -610,7 +614,8 @@ label.tag.checked-tag {
 }
 #libinfolink {
     text-decoration: none;
-    padding: 4px;
+    padding: 5px;
+    background: #ccf;
 }
 #libinfolink img {
     width: 17px;
@@ -719,52 +724,19 @@ label.tag.checked-tag {
 }
 
 
-/* External links
-   ============================================== */
-a[target]::after {
-    margin-left: 5px;
-    content: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtODI2LjQyOSAtNjk4Ljc5MSkiPjxyZWN0IHdpZHRoPSI1Ljk4MiIgaGVpZ2h0PSI1Ljk4MiIgeD0iODI2LjkyOSIgeT0iNzAyLjMwOSIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjMDZjIi8+PGc+PHBhdGggZD0iTTgzMS4xOTQgNjk4Ljc5MWg1LjIzNHY1LjM5MWwtMS41NzEgMS41NDUtMS4zMS0xLjMxLTIuNzI1IDIuNzI1LTIuNjg5LTIuNjg5IDIuODA4LTIuODA4LTEuMzExLTEuMzExeiIgZmlsbD0iIzA2ZiIvPjxwYXRoIGQ9Ik04MzUuNDI0IDY5OS43OTVsLjAyMiA0Ljg4NS0xLjgxNy0xLjgxNy0yLjg4MSAyLjg4MS0xLjIyOC0xLjIyOCAyLjg4MS0yLjg4MS0xLjg1MS0xLjg1MXoiIGZpbGw9IiNmZmYiLz48L2c+PC9nPjwvc3ZnPg==);
-}
-
-/* Zotero
+/* Zotero logo
    ========================= */
 .zotero-name {
     font-family: sans-serif;
     display: inline-block;
 }
-.zotero-name::first-letter {
-    color: #be0d0d !important;
-}
-#zotero1 {
-    font-size: 18px;
-}
+.zotero-name::first-letter { color: #be0d0d !important; }
+#zotero1 { font-size: 18px; }
+
 
 
 /* Columns
    ============================================== */
-/* OLD */
-/* .newspaper-cols { */
-/*     column-width: 250px; */
-/*     -webkit-column-width: 250px; */
-/*     -moz-column-width: 250px; */
-
-/*     column-rule: 1px solid #efefef; */
-/*     -webkit-column-rule: 1px solid #efefef; */
-/*     -moz-column-rule: 1px solid #eee; */
-
-/*     column-gap: 40px; */
-/*     -webkit-column-gap: 40px; */
-/*     -moz-column-gap: 40px; */
-
-/*     margin-left: 0px !important; */
-/* } */
-/* @media only screen and (min-width: 768px) { */
-/*     .newspaper-cols { -webkit-column-width: 300px; } */
-/* } */
-/* @media only screen and (min-width: 1300px) { */
-/*     .newspaper-cols { -webkit-column-width: 350px; } */
-/* } */
-
 
 /***********************
  * TEST ************/

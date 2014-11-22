@@ -193,13 +193,14 @@
             var key = match[2];
             var grpId = zoteroGroupPath2id[grp];
             // noMycheckLnks[i].href = "http://dl.dropboxusercontent.com/u/848981/it/z/zformat.html"
-            lnk.href = "http://ourcomments.org/cgi-bin/zformat.php"
             // Do I need to encodeURIComponent here? I can't see I need it.
+            lnk.href = "http://ourcomments.org/cgi-bin/zformat.php"
             // +"?z="+origURL
                 +"?zk="+key
                 +"&zgi="+grpId
             // +"&f="+formURL
             ;
+            lnk.href = "http://ourcomments.org/zformat/g/"+grpId+"/i/"+key;
             // If cturl is not removed Google will open the
             // orig URL. This could look a bit troublesome since
             // Google is supposed to depend on this. However what

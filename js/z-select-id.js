@@ -1,5 +1,8 @@
-var zoteroGrpIds;
+// var zoteroGrpIds;
 
+
+/////////////////////////////////////////////////
+// Zotero group id table
 var zIdTable = {};
 var idPsych = "56508";
 zIdTable[idPsych] = ["from_some_psychologists", "Psychology"];
@@ -8,18 +11,6 @@ zIdTable[idMito] = ["minding_my_mitochondria_terry_wahls", "Minding My Mitochond
 var idWahls = "268753";
 zIdTable[idWahls] = ["the_wahls_protocol", "The Wahls Protocol"];
 
-// var zoteroGroupPath2id = {
-//     "from_some_psychologists":56508,
-//     "minding_my_mitochondria_terry_wahls":136570,
-//     "the_wahls_protocol":268753
-// };
-// var zoteroGroupPath2id = (function(){
-//     var ret = {};
-//     for (var i=0, item; item[i++];) {
-//         ret[item[1]] = item[0];
-//     }
-//     return ret;
-// })();
 var zoteroGroupPath2id = (function(){
     var ret = {};
     for (var key in zIdTable) {
@@ -35,6 +26,79 @@ function zoteroId2GroupPath(id) {
         if (id == zoteroGroupPath2id[key]) return key;
 }
 
+
+//////////////////////////////////////////////////////////////////
+// Menus = cx + group ids (and labels etc)
+var menus = {};
+var menusOrder = [];
+function addMenuDef(urlParam, cx, zGrps, menuLabel, title, descFun) {
+    menusOrder.push(urlParam);
+    var menu = {"urlParam":urlParam,
+                "cx":cx,
+                "zGrps":zGrps,
+                "menuLabel":menuLabel,
+                "title":title,
+                "desc":descFun,
+                "menuElt":null // Reminder!
+               };
+    menus[urlParam] = menu;
+}
+addMenuDef("psych",
+           '008189935189648121880:c-91zelm5n8',
+           [idPsych],
+           "Psychology",
+           "Search our Zotero library for psychology",
+           (function() {
+               var desc = mkElt("p", null,
+                                ["Search Zotero library ",
+                                 mkGrpLibInfoTag(idPsych),
+                                 "."]);
+               return desc;
+           }),
+           null
+          );
+addMenuDef("food",
+           '008189935189648121880:u_oojlxeeau',
+           [idMito, idWahls],
+           "Food & Health",
+           "Search our Zotero libraries for food and health",
+           (function() {
+               var desc = mkElt("p", null,
+                                ["Search Zotero libraries ",
+                                 mkGrpLibInfoTag(idMito),
+                                 " and ",
+                                 mkGrpLibInfoTag(idWahls),
+                                 "."
+                                ]);
+               return desc;
+           }),
+           null
+          );
+addMenuDef("all",
+           '008189935189648121880:ma7nn38e5nq',
+           [idPsych, idMito, idWahls],
+           "All our Zotero libraries",
+           "Search all our Zotero libraries,\ni.e. both psychology and food & health",
+           (function() {
+               var desc = mkElt("p", null,
+                                ["Search all our Zotero libraries, i.e. ",
+                                 mkGrpLibInfoTag(idPsych),
+                                 ", ",
+                                 mkGrpLibInfoTag(idMito),
+                                 " and ",
+                                 mkGrpLibInfoTag(idWahls),
+                                 "."
+                                ]);
+               return desc;
+           }),
+           null
+          );
+// console.log("menus", menus); exit;
+
+
+
+///////////////////////////////////////////////
+// Google CSE
 var myCseCallback = function() {
     console.log("my call back");
     var zlatest = document.getElementById("zlatest");
@@ -86,6 +150,46 @@ var myCseCallback = function() {
             true);
     }
 };
+
+// Insert it before the CSE code snippet so that cse.js can take the script
+// parameters, like parsetags, callbacks.
+window["__gcse"] = {
+    "callback": myCseCallback
+};
+
+function loadGcse(cx) {
+    // var gcse = document.getElementById(cx);
+    // The page is reloaded all the time so the element is never found. Wonder what happens if it was??
+    // if (gcse) return;
+    var gcse = document.createElement('script');
+    gcse.id = cx;
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    // var s = document.getElementsByTagName('script')[0];
+    // s.parentNode.insertBefore(gcse, s);
+    document.head.appendChild(gcse);
+}
+// function selectAll() {
+//     // CSE: Zotero - Psychology, Food & Health
+//     zoteroGrpIds = [idPsych, idMito, idWahls];
+//     var cx = '008189935189648121880:ma7nn38e5nq';
+//     loadGcse(cx);
+// }
+// function selectPsychCSE() {
+//     // CSE: Zotero - From Some Psychologists
+//     zoteroGrpIds = [idPsych];
+//     var cx = '008189935189648121880:c-91zelm5n8';
+//     loadGcse(cx);
+// }
+// function selectFoodCSE() {
+//     // CSE: Zotero - Food & Health, Terry Wahls
+//     zoteroGrpIds = [idMito, idWahls];
+//     var cx = '008189935189648121880:u_oojlxeeau';
+//     loadGcse(cx);
+// }
+
 
 var mkElt = ZReader.mkElt;
 
@@ -165,69 +269,6 @@ function mkAltSearch(zGrpId) {
     return elt;
 }
 
-function selectAll() {
-    // CSE: Zotero - Psychology, Food & Health
-    zoteroGrpIds = [idPsych, idMito, idWahls];
-
-    // Insert it before the CSE code snippet so that cse.js can take the script
-    // parameters, like parsetags, callbacks.
-    // window.__gcse = {
-    window["__gcse"] = {
-        "callback": myCseCallback
-    };
-
-    (function() {
-        var cx = '008189935189648121880:ma7nn38e5nq';
-        var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
-        gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-            '//www.google.com/cse/cse.js?cx=' + cx;
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(gcse, s);
-    })();
-}
-
-function selectPsychCSE() {
-    // CSE: Zotero - From Some Psychologists
-    zoteroGrpIds = [idPsych];
-
-    // Insert it before the CSE code snippet so that cse.js can take the script
-    // parameters, like parsetags, callbacks.
-    // window.__gcse = {
-    window["__gcse"] = {
-        "callback": myCseCallback
-    };
-
-    (function() {
-        var cx = '008189935189648121880:c-91zelm5n8';
-        var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
-        gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-            '//www.google.com/cse/cse.js?cx=' + cx;
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(gcse, s);
-    })();
-}
-
-
-function selectFoodCSE() {
-    // CSE: Zotero - Food & Health, Terry Wahls
-    zoteroGrpIds = [idMito, idWahls];
-
-    // Insert it before the CSE code snippet so that cse.js can take the script
-    // parameters, like parsetags, callbacks.
-    // window.__gcse = {
-    window["__gcse"] = {
-        "callback": myCseCallback
-    };
-
-    (function() {
-        var cx = '008189935189648121880:u_oojlxeeau';
-        var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
-        gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-            '//www.google.com/cse/cse.js?cx=' + cx;
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(gcse, s);
-    })();
-}
 
 
 var params = new (function (sSearch) {
@@ -245,21 +286,11 @@ function currentQuery() {
     return document.getElementById("gsc-i-id1").value;
 }
 
-window.addEventListener("load", function() {
+
+function initOnLoad() {
 
     var problemsElt = document.getElementById("problems");
-    // var fewToggle = document.getElementById("few-hits-toggle");
     var fewToggle = mkElt("a", {"id":"few-hits-toggle", "class":"top-btn"}, "Few or wrong hits?");
-    // if (fewToggle) {
-    //     fewToggle.addEventListener("click", function(ev){
-    //         ev.preventDefault();
-    //         fewToggle.style.display = "none";
-    //         var fewDiv = document.getElementById("few-hits");
-    //         fewDiv.style.display = "block";
-    //         var link = fewDiv.querySelector("a");
-    //         if (link) { link.focus(); }
-    //     });
-    // }
     problemsElt.appendChild(fewToggle);
     fewToggle.addEventListener("click", function(ev){
         ev.preventDefault(); // prev only normal click!
@@ -295,7 +326,7 @@ window.addEventListener("load", function() {
                               return l.protocol+"//"+l.host+l.pathname
                                   +"?q=adhd+mta";
                           })(),
-                                   "target":"_blank"},
+                          "target":"_blank"},
                      "this search"),
                ". When I try this today the last hit looks like it is about MTA, ",
                "but it is actually about something quite different."
@@ -322,108 +353,141 @@ window.addEventListener("load", function() {
                mkElt("li", null,
                      "You can also search on Zotero's website in the libraries above.")
               ]));
-                        
+    
 
     var menuContainer = document.getElementById("menu-div");
-    var menu = mkElt("ul", null);
-    var menuPsy = mkElt("li",
-                           {"title":"Search our Zotero library for psychology",
-                            "tabindex":"0",
-                            "data-what":"psych"
-                           },
-                           "Psychology");
-    menu.appendChild(menuPsy);
-    var menuFood = mkElt("li",
-                           {"title":"Search our Zotero libraries for food and health",
-                            "tabindex":"0",
-                            "data-what":"food"
-                           },
-                           "Food & Health");
-    menu.appendChild(menuFood);
-    var menuAll = mkElt("li",
-                           {"title":"Search all our Zotero libraries,\ni.e. both psychology and food & health",
-                            "tabindex":"0",
-                            "data-what":"all"
-                           },
-                           "All");
-    menu.appendChild(menuAll);
-    menuContainer.appendChild(menu);
-
-    function addMenuEventlisteners() {
-        var menuItems = menu.childNodes;
-        // console.log("menuItems", menuItems);
-        for (var i=0, len=menuItems.length; i<len; i++) {
-            var mi = menuItems[i];
-            function menuClick(elt) {
-                // var ta = document.getElementById("gsc-i-id1").value;
-                var ta = currentQuery();
-                var what = elt.dataset.what;
-                var url = location.protocol+"//"+location.host+location.pathname + "?what="+what;
-                if (ta && ta.length > 0) url += "&q="+ta;
-                // console.log("url", url);
-                window.location.href = url;
-            }
-            mi.addEventListener("click", function () { menuClick(this); });
-            mi.addEventListener("keypress", function (ev) {
+    (function mkMenus() {
+        function menuClick(elt) {
+            // var ta = document.getElementById("gsc-i-id1").value;
+            var ta = currentQuery();
+            var what = elt.dataset.what;
+            var url = location.protocol+"//"+location.host+location.pathname + "?what="+what;
+            if (ta && ta.length > 0) url += "&q="+ta;
+            // console.log("url", url);
+            window.location.href = url;
+        }
+        var menuUl = mkElt("ul", null);
+        for (var i=0, what; what=menusOrder[i++];) {
+            var menuDef = menus[what];
+            var title = menuDef["title"];
+            var label = menuDef["menuLabel"];
+            var menuLi = mkElt("li",
+                               {"title":title,
+                                "tabindex":"0",
+                                "data-what":what
+                               },
+                               label);
+            menuDef["menuElt"] = menuLi;
+            menuUl.appendChild(menuLi);
+            menuLi.addEventListener("click", function () { menuClick(this); });
+            menuLi.addEventListener("keypress", function (ev) {
                 switch( ev.keyCode ) {
                 case 13: menuClick(this); break; // CR
                 }
             });
         }
-    }
-    addMenuEventlisteners();
+        menuContainer.appendChild(menuUl);
+    })();
+    // var menuPsy = mkElt("li",
+    //                        {"title":"Search our Zotero library for psychology",
+    //                         "tabindex":"0",
+    //                         "data-what":"psych"
+    //                        },
+    //                        "Psychology");
+    // menu.appendChild(menuPsy);
+    // var menuFood = mkElt("li",
+    //                        {"title":"Search our Zotero libraries for food and health",
+    //                         "tabindex":"0",
+    //                         "data-what":"food"
+    //                        },
+    //                        "Food & Health");
+    // menu.appendChild(menuFood);
+    // var menuAll = mkElt("li",
+    //                        {"title":"Search all our Zotero libraries,\ni.e. both psychology and food & health",
+    //                         "tabindex":"0",
+    //                         "data-what":"all"
+    //                        },
+    //                        "All");
+    // menu.appendChild(menuAll);
 
-        // mkLibInfoTag("https://www.zotero.org/groups/minding_my_mitochondria_terry_wahls",
-        //              "Minding My Mitochondria");
-        // mkLibInfoTag("https://www.zotero.org/groups/the_wahls_protocol",
-        //              "The Wahls Protocol");
-        // mkLibInfoTag("https://www.zotero.org/groups/from_some_psychologists",
-        //              "From Some Psychologists");
+    // function addMenuEventlisteners() {
+    //     var menuItems = menu.childNodes;
+    //     // console.log("menuItems", menuItems);
+    //     for (var i=0, len=menuItems.length; i<len; i++) {
+    //         var mi = menuItems[i];
+    //         function menuClick(elt) {
+    //             // var ta = document.getElementById("gsc-i-id1").value;
+    //             var ta = currentQuery();
+    //             var what = elt.dataset.what;
+    //             var url = location.protocol+"//"+location.host+location.pathname + "?what="+what;
+    //             if (ta && ta.length > 0) url += "&q="+ta;
+    //             // console.log("url", url);
+    //             window.location.href = url;
+    //         }
+    //         mi.addEventListener("click", function () { menuClick(this); });
+    //         mi.addEventListener("keypress", function (ev) {
+    //             switch( ev.keyCode ) {
+    //             case 13: menuClick(this); break; // CR
+    //             }
+    //         });
+    //     }
+    // }
+    // addMenuEventlisteners();
 
-    // var mkLatestMiocondria = function() { return mkLatestToggle(136570, "Minding My Mitochondria"); };
-    // var mkLatestWahlsProtocol = function() { return mkLatestToggle(268753, "The Wahls Protocol"); };
-    // var mkLatestPsychology = function() { return mkLatestToggle(56508, "From Some Psychologists"); };
+    // switch(params.what) {
+    // case "food":
+    //     menuFood.classList.add("menu-selected");
+    //     selectFoodCSE();
+    //     var title = document.createTextNode("Food & Health");
+    //     var desc = mkElt("p", null,
+    //                      ["Search Zotero libraries ",
+    //                       mkGrpLibInfoTag(idMito),
+    //                       " and ",
+    //                       mkGrpLibInfoTag(idWahls),
+    //                       "."
+    //                      ]);
+    //     break;
+    // case "all":
+    //     menuAll.classList.add("menu-selected");
+    //     var title = document.createTextNode("All our Zotero libraries");
+    //     var desc = mkElt("p", null,
+    //                      ["Search all our Zotero libraries, i.e. ",
+    //                       mkGrpLibInfoTag(idPsych),
+    //                       ", ",
+    //                       mkGrpLibInfoTag(idMito),
+    //                       " and ",
+    //                       mkGrpLibInfoTag(idWahls),
+    //                       "."
+    //                      ]);
+    //     selectAll();
+    //     break;
+    // case "psych":
+    // default:
+    //     var problemDiv = document.querySelector("#problems");
+    //     // if (problemDiv) { problemDiv.style.display = "none"; }
+    //     menuPsy.classList.add("menu-selected");
+    //     var title = document.createTextNode("Psychology");
+    //     var desc = mkElt("p", null,
+    //                      ["Search Zotero library ",
+    //                       mkGrpLibInfoTag(idPsych),
+    //                       "."]);
+    //     selectPsychCSE();
+    //     break;
+    // }
 
-    switch(params.what) {
-    case "food":
-        menuFood.classList.add("menu-selected");
-        selectFoodCSE();
-        var title = document.createTextNode("Food & Health");
-        var desc = mkElt("p", null,
-                         ["Search Zotero libraries ",
-                          mkGrpLibInfoTag(idMito),
-                          " and ",
-                          mkGrpLibInfoTag(idWahls),
-                          "."
-                         ]);
-        break;
-    case "all":
-        menuAll.classList.add("menu-selected");
-        var title = document.createTextNode("All our Zotero libraries");
-        var desc = mkElt("p", null,
-                         ["Search all our Zotero libraries, i.e. ",
-                          mkGrpLibInfoTag(idPsych),
-                          ", ",
-                          mkGrpLibInfoTag(idMito),
-                          " and ",
-                          mkGrpLibInfoTag(idWahls),
-                          "."
-                         ]);
-        selectAll();
-        break;
-    case "psych":
-    default:
-        var problemDiv = document.querySelector("#problems");
-        // if (problemDiv) { problemDiv.style.display = "none"; }
-        menuPsy.classList.add("menu-selected");
-        var title = document.createTextNode("Psychology");
-        var desc = mkElt("p", null,
-                         ["Search Zotero library ",
-                          mkGrpLibInfoTag(idPsych),
-                          "."]);
-        selectPsychCSE();
-        break;
-    }
+    var which = params.what || "psych";
+    var whichMenu = menus[which];
+    var menuElt      = whichMenu["menuElt"];
+    menuElt.classList.add("menu-selected");
+    var title        = whichMenu["title"];
+    title = document.createTextNode(title);
+    var desc         = whichMenu["desc"]();
+    var zoteroGrpIds = whichMenu["zGrps"];
+    var cx           = whichMenu["cx"];
+    loadGcse(cx);
+    var problemDiv = document.querySelector("#problems");
+
+
 
     var t = document.getElementById("title");
     t.appendChild(title);
@@ -466,4 +530,19 @@ window.addEventListener("load", function() {
             }
         }
     })();
-});
+    // });
+}
+
+switch (document.readyState) {
+case "loading":
+    document.addEventListener("DOMContentLoaded", function() {
+        initOnLoad();
+    });
+    break;
+case "interactive":
+case "complete":
+    initOnLoad();
+    break;
+default:
+    debugger;
+}
